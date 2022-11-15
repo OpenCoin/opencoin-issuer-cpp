@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <chrono>
+#include <optional>
 
 #include "crow/json.h"
 

@@ -97,7 +97,6 @@ crow::json::wvalue MintKeyCert::to_json() const {
   return r;
 }
 
-
 crow::json::wvalue ResponseCDDC::to_json() const
 {
   crow::json::wvalue r;
@@ -108,7 +107,19 @@ crow::json::wvalue ResponseCDDC::to_json() const
   
   r["type"]= "response cddc";
   return r;
-}  
+}
+std::optional<RequestCDDC> RequestCDDC::from_json(const crow::json::rvalue & json) {
+
+  if (json.has("cdd_serial")&&json.has("message_reference")) {
+    auto r = std::make_optional<RequestCDDC>();
+    r->cdd_serial=json["cdd_serial"].u();
+    r->message_reference= json["message_reference"].u();
+    return r;
+  }
+  else {
+    return std::nullopt;
+  }
+} 
 
 /** blafasel */
 class DefaultModel : public Model {
@@ -122,7 +133,7 @@ private:
   CDDC m_cddc;
 };
 
-std::unique_ptr<Model> Model::getModel(const std::string& backend_name)
+std::unique_ptr<Model> Model::getModel(const std::string& /*backend_name*/)
 {
 //:wq
 //if (backend_name=="default")
