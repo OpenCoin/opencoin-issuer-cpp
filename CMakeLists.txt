@@ -44,7 +44,16 @@ FetchContent_Declare(expected
 if(NOT expected_POPULATED)
   FetchContent_Populate(expected)
 endif(NOT expected_POPULATED)
- 
+
+find_package(Doxygen
+             REQUIRED dot
+             OPTIONAL_COMPONENTS mscgen dia)
+set(DOXYGEN_HAVE_DOT YES)
+doxygen_add_docs(
+    doc
+    src
+    COMMENT "Generate dcoumentation"
+)
 set(API_SOURCES src/main.cpp src/model.cpp src/model.hpp)
 add_executable(oc-mint ${API_SOURCES})
 target_link_libraries(oc-mint PRIVATE Crow::Crow INTERFACE tl::expected::expected)

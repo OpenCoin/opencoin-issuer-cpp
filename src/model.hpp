@@ -10,6 +10,7 @@
 
 #include "tl/expected.hpp"
 
+
 struct PublicKey {
   std::string modulus; //: "daaa63ddda38c189b8c49020c8276adbe0a695685a...",
   std::string public_exponent;//: 65537,
@@ -23,7 +24,6 @@ struct WeightedUrl {
 
   crow::json::wvalue to_json() const;
 };
-
 
 /** currency description document */
 struct CDD {
@@ -80,28 +80,154 @@ struct MintKeyCert {
   crow::json::wvalue to_json() const;  
 };
 
-struct RequestCDDC {
-  unsigned int cdd_serial;/// The version of the CDD. (Int)
-  unsigned int message_reference; /// Client internal message reference.
-                                  /// (Integer)
-  static std::optional<RequestCDDC> from_json(const crow::json::rvalue & json); 
+enum class eError {
+  JSON_PARSE_ERROR,
+  JSON_ERROR,
+  NOT_IMPLEMENTED
 };
 
-struct ResponseCDDC {
-  CDDC cddc;
+struct Response {
   unsigned int message_reference;
   unsigned int status_code;
   std::string status_description;
 
+  virtual crow::json::wvalue to_json() const;  
+};
+  
+struct RequestCDDSerial {
+  unsigned int message_reference; /// Client internal message reference.
+                                  /// (Integer)
+  static tl::expected<RequestCDDSerial,eError> from_string(const std::string& str);
+};
+
+struct ResponseCDDSerial: Response {
+  unsigned int cdd_serial;
+
+  crow::json::wvalue to_json() const override;  
+};
+
+struct RequestCDDC {
+  unsigned int cdd_serial;/// The version of the CDD. (Int)
+  unsigned int message_reference; /// Client internal message reference.
+                                  /// (Integer)
+  static tl::expected<RequestCDDC,eError> from_string(const std::string& str);
+};
+
+struct ResponseCDDC : Response {
+  CDDC cddc;
+
+  crow::json::wvalue to_json() const override;  
+};
+
+struct RequestMKCs {
+  std::vector<unsigned int> denominations;
+  unsigned int message_reference; /// Client internal message reference.
+                                  /// (Integer)
+  std::vector<unsigned int> mint_key_ids;
+  //  "type": "request mint key certificates"
+  static tl::expected<RequestMKCs,eError> from_string(const std::string& str);
+};
+
+struct ResponseMKCs: Response {
+  std::vector<MintKeyCert> keys;
+
+  crow::json::wvalue to_json() const override;  
+};
+
+struct Blind {
+  std::string blinded_payload_hash;
+  std::string mint_key_id;
+  std::string reference;
   crow::json::wvalue to_json() const;  
 };
 
-  
+struct BlindSignature {
+  std::string blind_signature;
+  std::string reference;
+  crow::json::wvalue to_json() const;  
+};
+
+struct RequestMint {
+  std::vector<Blind> blinds;
+  unsigned int message_reference; /// Client internal message reference.
+                                  /// (Integer)
+  //  "type": "request mint"
+  static tl::expected<RequestMint,eError> from_string(const std::string& str);
+};
+
+struct ResponseMint : Response {
+  std::vector<BlindSignature> blind_signatures;
+
+  crow::json::wvalue to_json() const override;  
+};
+
+
+struct Coin {
+  struct Payload {
+    std::string cdd_location;
+    unsigned int denomination;
+    std::string issuer_id;
+    std::string mint_key_id;
+    std::string protocol_version;
+    std::string serial;
+    
+    crow::json::wvalue to_json() const;  
+};
+
+  Payload payload;
+  std::string signature;
+
+  crow::json::wvalue to_json() const;  
+};
+
+struct CoinStack {
+  std::vector<Coin> coins;
+  std::string subject;
+  //  "type": "coinstack"
+  crow::json::wvalue to_json() const;  
+};
+
+struct RequestRenew {
+  std::vector<Blind> blinds;
+  std::vector<Coin> coins;
+  unsigned int message_reference; /// Client internal message reference.
+                                  /// (Integer)
+  unsigned int transaction_reference; 
+  //  "type": "request renew"
+  static tl::expected<RequestRenew,eError> from_string(const std::string& str);
+};
+
+struct ResponseDelay : Response {
+  crow::json::wvalue to_json() const override;  
+};
+
+struct RequestResume {
+  unsigned int message_reference; /// Client internal message reference.
+                                  /// (Integer)
+  unsigned int transaction_reference; 
+  //  "type": "request resume"
+  static tl::expected<RequestResume,eError> from_string(const std::string& str);
+};
+
+struct RequestRedeem {
+  std::vector<Coin> coins;
+  unsigned int message_reference; /// Client internal message reference.
+                                  /// (Integer)
+  unsigned int transaction_reference; 
+  //  "type": "request redeem"
+  static tl::expected<RequestRedeem,eError> from_string(const std::string& str);
+};
+
+struct ResponseReedem : Response {
+  crow::json::wvalue to_json() const override;  
+};
+
 class Model {
 public:
   virtual ~Model(){};
 
   virtual const CDDC& getCDDC() = 0;
+  virtual const CDDC& getCurrentCDDC() = 0;
   virtual void mint() = 0;
 
   static std::unique_ptr<Model> getModel(const std::string& backend_name);
