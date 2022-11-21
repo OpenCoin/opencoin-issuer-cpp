@@ -17,6 +17,7 @@ endif()
 project(oc-mint VERSION 0.0.1 LANGUAGES CXX)
 
 include(FetchContent)
+
 #
 # crow project Configuration variables
 #
@@ -45,6 +46,20 @@ if(NOT expected_POPULATED)
   FetchContent_Populate(expected)
 endif(NOT expected_POPULATED)
 
+include(CTest)
+enable_testing()
+
+set(CATCH_INSTALL_DOCS Off)
+set(CATCH_INSTALL_EXTRAS Off)
+FetchContent_Declare(
+  Catch2
+  GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+  GIT_TAG        v3.2.0
+)
+
+FetchContent_MakeAvailable(Catch2)
+
+#add doxygen documentation
 find_package(Doxygen
              REQUIRED dot
              OPTIONAL_COMPONENTS mscgen dia)
@@ -52,9 +67,21 @@ set(DOXYGEN_HAVE_DOT YES)
 doxygen_add_docs(
     doc
     src
-    COMMENT "Generate dcoumentation"
+    COMMENT "Generate documentation"
 )
-set(API_SOURCES src/main.cpp src/model.cpp src/model.hpp)
-add_executable(oc-mint ${API_SOURCES})
-target_link_libraries(oc-mint PRIVATE Crow::Crow INTERFACE tl::expected::expected)
-target_include_directories(oc-mint PRIVATE ${expected_SOURCE_DIR}/include) 
+
+# build common library
+set(LIB_SOURCES src/model.cpp src/model.hpp)
+add_library(oc-mint-lib ${LIB_SOURCES})
+target_link_libraries(oc-mint-lib PUBLIC Crow::Crow)
+target_include_directories(oc-mint-lib PUBLIC ${expected_SOURCE_DIR}/include src) 
+
+add_executable(oc-mint src/main.cpp)
+target_link_libraries(oc-mint PRIVATE oc-mint-lib INTERFACE tl::expected::expected)
+
+## these are unittests that can be run on any platform
+add_executable(tests test/test.cpp)
+target_link_libraries(tests
+                      oc-mint-lib
+		      Catch2::Catch2WithMain)
+add_test(tests tests)
