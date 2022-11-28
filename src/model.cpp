@@ -122,9 +122,11 @@ RequestCDDSerial::from_string(const std::string& str)
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if (!json.has("message_reference")) {
+  } else if ( !json.has("type") || !json.has("message_reference")) {
     return tl::make_unexpected(eError::JSON_ERROR);
-  } else {
+  } else if ( json["type"]!="request cdd serial") {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  } else {  
     RequestCDDSerial r;
     r.message_reference= json["message_reference"].u();
     return r;
@@ -145,9 +147,14 @@ RequestCDDC::from_string(const std::string& str)
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if (!(json.has("cdd_serial")&&json.has("message_reference"))) {
-    return tl::make_unexpected(eError::JSON_ERROR);
-  } else {
+  } else if ( !( json.has("type")
+		 && json.has("message_reference")
+		 && json.has("cdd_serial")
+		 ) ) {
+    return tl::make_unexpected(eError::JSON_MISSING_KEY);
+  }  else if ( json["type"]!="request cddc" ) {
+    return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
+  } else {  
     RequestCDDC r;
     r.cdd_serial=json["cdd_serial"].u();
     r.message_reference= json["message_reference"].u();
@@ -157,17 +164,38 @@ RequestCDDC::from_string(const std::string& str)
 
 tl::expected<RequestMKCs,eError>
 RequestMKCs::from_string(const std::string& str) {
-  std::vector<unsigned int> denominations;
-  unsigned int message_reference; /// Client internal message reference.
-                                  /// (Integer)
-  std::vector<unsigned int> mint_key_ids;
-  //  "type": "request mint key certificates"
-
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else {
-    return tl::make_unexpected(eError::NOT_IMPLEMENTED);
+  } else if ( !(json.has("denominations")
+		&& json.has("message_reference")
+		&& json.has("mint_key_ids")
+		&& json.has("type")
+		 ) ) {
+    return tl::make_unexpected(eError::JSON_MISSING_KEY);
+  }  else if ( json["type"]!="request mint key certificates" ) {
+    return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
+  } else {  
+    RequestMKCs r;
+    r.message_reference= json["message_reference"].u();
+
+    auto denominations = json["denominations"];
+    if ( denominations.t()!=crow::json::type::List) {
+      return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
+    } else {
+      for (auto d: denominations.lo()) {
+	r.denominations.push_back(d.u());
+      }
+    }
+    auto mint_key_ids = json["mint_key_ids"];
+    if ( mint_key_ids.t()!=crow::json::type::List) {
+      return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
+    } else {
+      for (auto k: mint_key_ids.lo()) {
+	r.mint_key_ids.push_back(k.u());
+      }
+    }
+    return r;
   }
 }
 
@@ -188,6 +216,25 @@ crow::json::wvalue Blind::to_json() const {
   return r;
 } 
 
+tl::expected<Blind,eError> Blind::from_json(const crow::json::rvalue& json)
+{
+  if ( !( json.has("type")
+	  && json.has("blinded_payload_hash")
+	  && json.has("mint_key_id")
+	  && json.has("reference")
+	  ) ) {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  }  else if ( json["type"]!="blinded payload hash" ) {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  } else {  
+    Blind r;
+    r.blinded_payload_hash = json["blinded_payload_hash"].s();
+    r.mint_key_id = json["mint_key_id"].s();
+    r.reference = json["reference"].s();
+    return r;
+  }
+}
+
 crow::json::wvalue BlindSignature::to_json() const {
   crow::json::wvalue r;
   TO_JSON(blind_signature);
@@ -200,14 +247,35 @@ crow::json::wvalue BlindSignature::to_json() const {
 tl::expected<RequestMint,eError>
 RequestMint::from_string(const std::string& str){
   std::vector<Blind> blinds;
-  unsigned int message_reference; /// Client internal message reference.
-                                  /// (Integer)
   //  "type": "request mint"
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else {
-    return tl::make_unexpected(eError::NOT_IMPLEMENTED);
+  } else if ( !( json.has("type")
+		 && json.has("message_reference")
+		 && json.has("transaction_reference")
+		 && json.has("blinds")
+		 ) ) {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  }  else if ( json["type"]!="request mint" ) {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  } else {  
+    RequestMint r;
+    r.message_reference= json["message_reference"].u();
+    r.transaction_reference= json["transaction_reference"].s();
+    if (json["blinds"].t()!=crow::json::type::List) {
+      return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
+    }
+
+    for (auto item: json["blinds"])  {
+      auto b = Blind::from_json(item);
+      if (!b.has_value()) {
+	return tl::make_unexpected(b.error());
+      } else {
+	r.blinds.push_back(b.value());
+      }
+    }
+    return r;
   }
 }
 
@@ -240,6 +308,50 @@ crow::json::wvalue Coin::to_json() const
   return r;
 }
 
+tl::expected<Coin::Payload,eError> Coin::Payload::from_json(const crow::json::rvalue& json) {
+  if ( !( json.has("cdd_location")
+	  && json.has("denomination")
+	  && json.has("issuer_id")
+	  && json.has("mint_key_id")
+	  && json.has("protocol_version")
+	  && json.has("serial")
+	  && json.has("type"))) {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  }  else if ( json["type"]!="payload" ) {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  } else {  
+    Coin::Payload payload;
+    payload.cdd_location = json["cdd_location"].s();
+    payload.denomination = json["denomination"].u();
+    payload.issuer_id    = json["issuer_id"].s();
+    payload.mint_key_id  = json["mint_key_id"].s();
+    payload.protocol_version = json["protocol_version"].s();
+    payload.serial      = json["serial"].s();
+    return payload;
+  }
+}
+
+tl::expected<Coin,eError> Coin::from_json(const crow::json::rvalue& json) {
+  if ( !( json.has("type")
+	  && json.has("payload")
+	  && json.has("signature")
+	  ) ) {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  }  else if ( json["type"]!="coin" ) {
+    return tl::make_unexpected(eError::JSON_ERROR);
+  } else {  
+    auto pl = Payload::from_json(json["payload"]);
+    if (!pl.has_value()) {
+      return tl::make_unexpected(pl.error());
+    } else { 
+      Coin c;
+      c.payload = pl.value(); 
+      c.signature = json["signature"].s();
+      return c;
+    }
+  }
+}
+
 crow::json::wvalue CoinStack::to_json() const {
   crow::json::wvalue r;
   TO_JSON_ARRAY(coins);
@@ -251,17 +363,46 @@ crow::json::wvalue CoinStack::to_json() const {
 
 tl::expected<RequestRenew,eError>
 RequestRenew::from_string(const std::string& str) {
-  std::vector<Blind> blinds;
-  std::vector<Coin> coins;
-  unsigned int message_reference; /// Client internal message reference.
-                                  /// (Integer)
-  unsigned int transaction_reference; 
-  //  "type": "request renew"
   auto json = crow::json::load(str);
+
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else {
-    return tl::make_unexpected(eError::NOT_IMPLEMENTED);
+  } else if ( !( json.has("blinds")
+		 && json.has("coins")
+		 && json.has("transaction_reference")
+		 && json.has("message_reference")
+		 && json.has("type")
+		 ) ) {
+    return tl::make_unexpected(eError::JSON_MISSING_KEY);
+  }  else if ( json["type"]!="request renew" ) {
+    return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
+  } else if (    (json["coins"].t()!=crow::json::type::List)
+	      || (json["blinds"].t()!=crow::json::type::List) ) {
+      return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
+  } else {  
+    RequestRenew r;
+
+    for (auto item: json["coins"])  {
+      auto coin = Coin::from_json(item);
+      if (!coin.has_value()) {
+	return tl::make_unexpected(coin.error());
+      } else {
+	r.coins.push_back(coin.value());
+      }
+    }
+    
+    for (auto item: json["blinds"])  {
+      auto blind = Blind::from_json(item);
+      if (!blind.has_value()) {
+	return tl::make_unexpected(blind.error());
+      } else {
+	r.blinds.push_back(blind.value());
+      }
+    }
+ 
+    r.message_reference = json["message_reference"].u();
+    r.transaction_reference = json["transaction_reference"].s();  
+    return r;
   }
 }
 
@@ -273,30 +414,53 @@ crow::json::wvalue ResponseDelay::to_json() const {
 
 tl::expected<RequestResume,eError>
 RequestResume::from_string(const std::string& str) {
-  unsigned int message_reference; /// Client internal message reference.
-                                  /// (Integer)
-  unsigned int transaction_reference; 
-  //  "type": "request resume"
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else {
-    return tl::make_unexpected(eError::NOT_IMPLEMENTED);
+  } else if ( !( json.has("transaction_reference")
+		 && json.has("message_reference")
+		 && json.has("type")
+		 ) ) {
+    return tl::make_unexpected(eError::JSON_MISSING_KEY);
+  }  else if ( json["type"]!="request resume" ) {
+    return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
+  } else {  
+    RequestResume r;
+    r.message_reference = json["message_reference"].u();
+    r.transaction_reference = json["transaction_reference"].s();  
+    return r;
   }
 }
 
 tl::expected<RequestRedeem,eError>
 RequestRedeem::from_string(const std::string& str) {
-  std::vector<Coin> coins;
-  unsigned int message_reference; /// Client internal message reference.
-                                  /// (Integer)
-  unsigned int transaction_reference; 
-  //  "type": "request redeem"
-  auto json = crow::json::load(str);
+  //  "type": 
+auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else {
-    return tl::make_unexpected(eError::NOT_IMPLEMENTED);
+  } else if ( !( json.has("coins")
+		 && json.has("message_reference")
+		 && json.has("type")
+		 ) ) {
+    return tl::make_unexpected(eError::JSON_MISSING_KEY);
+  }  else if ( json["type"]!="request redeem" ) {
+    return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
+  } else {  
+    RequestRedeem r;
+    r.message_reference = json["message_reference"].u();
+    if (json["coins"].t()!=crow::json::type::List) {
+      return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
+    }
+
+    for (auto item: json["coins"])  {
+      auto coin = Coin::from_json(item);
+      if (!coin.has_value()) {
+	return tl::make_unexpected(coin.error());
+      } else {
+	r.coins.push_back(coin.value());
+      }
+    }
+    return r;
   }
 }
 

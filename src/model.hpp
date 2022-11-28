@@ -82,6 +82,9 @@ struct MintKeyCert {
 
 enum class eError {
   JSON_PARSE_ERROR,
+  JSON_MISSING_KEY,
+  JSON_WRONG_REQUEST_TYPE,
+  JSON_WRONG_VALUE_TYPE,
   JSON_ERROR,
   NOT_IMPLEMENTED
 };
@@ -135,10 +138,11 @@ struct ResponseMKCs: Response {
 };
 
 struct Blind {
-  std::string blinded_payload_hash;
-  std::string mint_key_id;
+  std::string blinded_payload_hash; //bigint
+  std::string mint_key_id; //bigint
   std::string reference;
-  crow::json::wvalue to_json() const;  
+  crow::json::wvalue to_json() const;
+  static tl::expected<Blind,eError> from_json(const crow::json::rvalue& json);
 };
 
 struct BlindSignature {
@@ -148,9 +152,10 @@ struct BlindSignature {
 };
 
 struct RequestMint {
-  std::vector<Blind> blinds;
   unsigned int message_reference; /// Client internal message reference.
                                   /// (Integer)
+  std::string transaction_reference; 
+  std::vector<Blind> blinds;
   //  "type": "request mint"
   static tl::expected<RequestMint,eError> from_string(const std::string& str);
 };
@@ -172,12 +177,14 @@ struct Coin {
     std::string serial;
     
     crow::json::wvalue to_json() const;  
-};
+    static tl::expected<Payload,eError> from_json(const crow::json::rvalue& json);
+  };
 
   Payload payload;
   std::string signature;
 
   crow::json::wvalue to_json() const;  
+  static tl::expected<Coin,eError> from_json(const crow::json::rvalue& json);
 };
 
 struct CoinStack {
@@ -192,7 +199,7 @@ struct RequestRenew {
   std::vector<Coin> coins;
   unsigned int message_reference; /// Client internal message reference.
                                   /// (Integer)
-  unsigned int transaction_reference; 
+  std::string transaction_reference; 
   //  "type": "request renew"
   static tl::expected<RequestRenew,eError> from_string(const std::string& str);
 };
@@ -204,7 +211,7 @@ struct ResponseDelay : Response {
 struct RequestResume {
   unsigned int message_reference; /// Client internal message reference.
                                   /// (Integer)
-  unsigned int transaction_reference; 
+  std::string transaction_reference; 
   //  "type": "request resume"
   static tl::expected<RequestResume,eError> from_string(const std::string& str);
 };
@@ -213,7 +220,6 @@ struct RequestRedeem {
   std::vector<Coin> coins;
   unsigned int message_reference; /// Client internal message reference.
                                   /// (Integer)
-  unsigned int transaction_reference; 
   //  "type": "request redeem"
   static tl::expected<RequestRedeem,eError> from_string(const std::string& str);
 };
