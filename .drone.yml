@@ -1,0 +1,29 @@
+---
+kind: pipeline
+type: docker
+name: amd64-main
+
+platform:
+  os: linux
+  arch: amd64
+
+trigger:
+  branch:
+    - main
+  event:
+    - push
+    - pull_request
+
+steps:
+  - name: build
+    image: debian
+    commands:
+      - apt-get update
+      - apt-get -y install build-essential libboost-system-dev libboost-date-time-dev git cmake graphviz doxygen
+      - cmake -B build -S .
+      -  cmake --build build -t all test
+    when:
+      branch:
+        - main
+      event:
+        - push
