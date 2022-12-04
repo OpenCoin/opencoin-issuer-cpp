@@ -21,7 +21,7 @@ steps:
       - apt-get update
       - apt-get -y install build-essential libboost-system-dev libboost-date-time-dev git cmake graphviz doxygen
       - cmake -B build -S .
-      -  cmake --build build -t all test
+      - cmake --build build -t all test
     when:
       branch:
         - main
