@@ -70,7 +70,8 @@ int main() {
           ResponseMint res;
           res.message_reference = req->message_reference;
 
-          auto minted = model->mint(req->transaction_reference, req->blinds);
+	  /// \todo change argument transaction_reference to bigint
+          auto minted = model->mint(req->transaction_reference.to_string(), req->blinds);
 
           res.blind_signatures = minted;
           res.status_code = crow::status::OK;

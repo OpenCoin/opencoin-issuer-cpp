@@ -1,9 +1,11 @@
 #include "model.hpp"
 #include "crow/json.h"
+#include "tl/expected.hpp"
 
-#define TO_JSON(name) r[#name] = name
-#define TO_JSON_JSON(name) r[#name] = name.to_json()
-#define TO_JSON_ARRAY(name) r[#name] = list_to_json(name)
+#define TO_JSON(name) r[#name]=name
+#define BIGINT_TO_JSON(name) r[#name]=name.to_string()
+#define TO_JSON_JSON(name) r[#name]=name.to_json()
+#define TO_JSON_ARRAY(name) r[#name]=list_to_json(name)
 
 template <class T>
 crow::json::wvalue list_to_json(const std::vector<T> &array) {
@@ -22,9 +24,9 @@ crow::json::wvalue list_to_json(const std::vector<unsigned int> &array) {
 
 crow::json::wvalue PublicKey::to_json() const {
   crow::json::wvalue r;
-  TO_JSON(modulus);
-  TO_JSON(public_exponent);
-  r["type"] = "rsa public key";
+  BIGINT_TO_JSON(modulus);
+  BIGINT_TO_JSON(public_exponent);
+  r["type"]="rsa public key";
   return r;
 }
 
@@ -48,7 +50,7 @@ crow::json::wvalue CDD::to_json() const {
   TO_JSON(currency_divisor);
   TO_JSON(currency_name);
   TO_JSON_ARRAY(denominations);
-  TO_JSON(id);
+  BIGINT_TO_JSON(id);
   TO_JSON_ARRAY(info_service);
   TO_JSON(issuer_cipher_suite);
   TO_JSON_JSON(issuer_public_master_key);
@@ -75,8 +77,8 @@ crow::json::wvalue MintKey::to_json() const {
   TO_JSON(cdd_serial);
   TO_JSON(coins_expiry_date);
   TO_JSON(denomination);
-  TO_JSON(id);
-  TO_JSON(issuer_id);
+  BIGINT_TO_JSON(id);
+  BIGINT_TO_JSON(issuer_id);
   TO_JSON_JSON(public_mint_key);
 
   TO_JSON(sign_coins_not_after);
@@ -177,8 +179,13 @@ RequestMKCs::from_string(const std::string &str) {
     if (mint_key_ids.t() != crow::json::type::List) {
       return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
     } else {
-      for (auto k : mint_key_ids.lo()) {
-        r.mint_key_ids.push_back(k.u());
+      for (auto k: mint_key_ids.lo()) {
+	auto kv = BigInt::from_string(k.s());
+	if (!kv.has_value()) {
+	  return tl::make_unexpected(eError::JSON_PARSE_ERROR);
+	} else {
+	  r.mint_key_ids.push_back(*kv);
+	}
       }
     }
     return r;
@@ -194,23 +201,37 @@ crow::json::wvalue ResponseMKCs::to_json() const {
 
 crow::json::wvalue Blind::to_json() const {
   crow::json::wvalue r;
-  TO_JSON(blinded_payload_hash);
-  TO_JSON(mint_key_id);
+  BIGINT_TO_JSON(blinded_payload_hash);
+  BIGINT_TO_JSON(mint_key_id);
   TO_JSON(reference);
   r["type"] = "blinded payload hash";
   return r;
 }
 
 tl::expected<Blind, eError> Blind::from_json(const crow::json::rvalue &json) {
-  if (!(json.has("type") && json.has("blinded_payload_hash") &&
-        json.has("mint_key_id") && json.has("reference"))) {
+  if (!(json.has("type")
+	&& json.has("blinded_payload_hash")
+	&& json.has("mint_key_id")
+	&& json.has("reference"))) {
     return tl::make_unexpected(eError::JSON_ERROR);
   } else if (json["type"] != "blinded payload hash") {
     return tl::make_unexpected(eError::JSON_ERROR);
   } else {
     Blind r;
-    r.blinded_payload_hash = json["blinded_payload_hash"].s();
-    r.mint_key_id = json["mint_key_id"].s();
+
+    auto hash = BigInt::from_string(json["blinded_payload_hash"].s());
+    if (!hash) {
+      // std::cout << "invalid hash : " <<  json["blinded_payload_hash"].s()
+      // 		<< std::endl;
+      return tl::make_unexpected(eError::JSON_PARSE_ERROR);
+    }
+    r.blinded_payload_hash = hash.value();
+
+    auto key_id = BigInt::from_string(json["mint_key_id"].s());
+    if (!key_id) {
+      return tl::make_unexpected(eError::JSON_PARSE_ERROR);
+    }
+    r.mint_key_id = key_id.value();
     r.reference = json["reference"].s();
     return r;
   }
@@ -218,7 +239,7 @@ tl::expected<Blind, eError> Blind::from_json(const crow::json::rvalue &json) {
 
 crow::json::wvalue BlindSignature::to_json() const {
   crow::json::wvalue r;
-  TO_JSON(blind_signature);
+  BIGINT_TO_JSON(blind_signature);
   TO_JSON(reference);
   r["type"] = "blind signature";
   return r;
@@ -238,9 +259,13 @@ RequestMint::from_string(const std::string &str) {
     return tl::make_unexpected(eError::JSON_ERROR);
   } else {
     RequestMint r;
-    r.message_reference = json["message_reference"].u();
-    r.transaction_reference = json["transaction_reference"].s();
-    if (json["blinds"].t() != crow::json::type::List) {
+    r.message_reference= json["message_reference"].u();
+    auto tr = BigInt::from_string(json["transaction_reference"].s());
+    if (!tr)
+      return tl::make_unexpected(eError::JSON_PARSE_ERROR);
+      
+    r.transaction_reference = *tr;
+    if (json["blinds"].t()!=crow::json::type::List) {
       return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
     }
 
@@ -267,10 +292,10 @@ crow::json::wvalue Coin::Payload::to_json() const {
   crow::json::wvalue r;
   TO_JSON(cdd_location);
   TO_JSON(denomination);
-  TO_JSON(issuer_id);
-  TO_JSON(mint_key_id);
+  BIGINT_TO_JSON(issuer_id);
+  BIGINT_TO_JSON(mint_key_id);
   TO_JSON(protocol_version);
-  TO_JSON(serial);
+  BIGINT_TO_JSON(serial);
 
   r["type"] = "payload";
   return r;
@@ -297,10 +322,20 @@ Coin::Payload::from_json(const crow::json::rvalue &json) {
     Coin::Payload payload;
     payload.cdd_location = json["cdd_location"].s();
     payload.denomination = json["denomination"].u();
-    payload.issuer_id = json["issuer_id"].s();
-    payload.mint_key_id = json["mint_key_id"].s();
+    auto id = BigInt::from_string(json["issuer_id"].s());
+    if (!id)
+      tl::make_unexpected(eError::JSON_PARSE_ERROR);
+    payload.issuer_id    = *id;
+
+    id = BigInt::from_string(json["mint_key_id"].s());
+    if (!id)
+      tl::make_unexpected(eError::JSON_PARSE_ERROR);
+    payload.mint_key_id  = *id;
     payload.protocol_version = json["protocol_version"].s();
-    payload.serial = json["serial"].s();
+    id = BigInt::from_string(json["serial"].s());
+    if (!id)
+      tl::make_unexpected(eError::JSON_PARSE_ERROR);
+    payload.serial      = *id;
     return payload;
   }
 }
@@ -392,7 +427,10 @@ RequestResume::from_string(const std::string &str) {
   } else {
     RequestResume r;
     r.message_reference = json["message_reference"].u();
-    r.transaction_reference = json["transaction_reference"].s();
+    auto tr = BigInt::from_string(json["transaction_reference"].s());
+    if (!tr)
+      return tl::make_unexpected(eError::JSON_PARSE_ERROR);
+    r.transaction_reference = *tr;
     return r;
   }
 }
@@ -451,7 +489,7 @@ public:
     return &m_cddc;
   }
 
-  std::vector<BlindSignature> mint(const std::string &transaction_reference,
+  std::vector<BlindSignature> mint(const std::string& transaction_reference,
                                    const std::vector<Blind> &blinds) override {
     std::vector<BlindSignature> res;
     cout << __FUNCTION__ << "("
@@ -462,7 +500,7 @@ public:
 
   const std::vector<MintKeyCert>
   getMKCs(const std::vector<unsigned int> &denominations,
-          const std::vector<unsigned int> &mint_key_ids) override {
+          const std::vector<BigInt> &mint_key_ids) override {
     std::vector<MintKeyCert> res;
     cout << __FUNCTION__ << endl;
     return res;
