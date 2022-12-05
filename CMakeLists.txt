@@ -71,7 +71,7 @@ doxygen_add_docs(
 )
 
 # build common library
-set(LIB_SOURCES src/model.cpp src/model.hpp)
+set(LIB_SOURCES src/model.cpp src/model.hpp src/big_int.hpp src/big_int.cpp)
 add_library(oc-mint-lib ${LIB_SOURCES})
 target_link_libraries(oc-mint-lib PUBLIC Crow::Crow)
 target_include_directories(oc-mint-lib PUBLIC ${expected_SOURCE_DIR}/include src) 
@@ -80,7 +80,7 @@ add_executable(oc-mint src/main.cpp)
 target_link_libraries(oc-mint PRIVATE oc-mint-lib INTERFACE tl::expected::expected)
 
 ## these are unittests that can be run on any platform
-add_executable(tests test/test.cpp)
+add_executable(tests  test/test_big_int.cpp test/test.cpp)
 target_link_libraries(tests
                       oc-mint-lib
 		      Catch2::Catch2WithMain)

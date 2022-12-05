@@ -9,10 +9,11 @@
 #include "crow/json.h"
 
 #include "tl/expected.hpp"
+#include "big_int.hpp"
 
 struct PublicKey {
-  std::string modulus; //: "daaa63ddda38c189b8c49020c8276adbe0a695685a...",
-  std::string public_exponent; //: 65537,
+  BigInt modulus; //: "daaa63ddda38c189b8c49020c8276adbe0a695685a...",
+  BigInt public_exponent;//: 65537,
 
   crow::json::wvalue to_json() const;
 };
@@ -28,15 +29,16 @@ struct WeightedUrl {
 struct CDD {
 
   std::string additional_info;
-  time_t cdd_expiry_date;              //: 2023-07-22T15:45:53.164685
-  std::string cdd_location;            //: https://opencent.org,
-  size_t cdd_serial;                   //: 1,
-  time_t cdd_signing_date;             //: 2022-07-22T15:45:53.164685,
-  size_t currency_divisor;             //: 100,
-  std::string currency_name;           //: OpenCent,
-  std::vector<unsigned> denominations; //: [1, 2, 5],
-  std::string id; //: 23ed956e629ba35f0002eaf833ea436aea7db5c2,
-  std::vector<WeightedUrl> info_service;
+  time_t cdd_expiry_date;//: 2023-07-22T15:45:53.164685
+  std::string  cdd_location;//: https://opencent.org,
+  size_t cdd_serial;//: 1,
+  time_t  cdd_signing_date;//: 2022-07-22T15:45:53.164685,
+  size_t  currency_divisor;//: 100,
+  std::string  currency_name;//: OpenCent,
+  std::vector<unsigned>  denominations;//: [1, 2, 5],
+  BigInt id;//: 23ed956e629ba35f0002eaf833ea436aea7db5c2,
+
+std::vector<WeightedUrl> info_service;
   /* eCipherSuite*/ std::string issuer_cipher_suite; //: RSA-SHA256-PSS-CHAUM82,
   PublicKey
       issuer_public_master_key; //: {
@@ -63,9 +65,9 @@ struct CDDC {
 struct MintKey {
   unsigned int cdd_serial;
   std::string coins_expiry_date; //": "2023-10-30T15:45:53.164685",
-  unsigned int denomination;     //": 1,
-  std::string id;                // "1ceb977bb531c65f133ab8b0d60862b17369d96",
-  std::string issuer_id; //": "23ed956e629ba35f0002eaf833ea436aea7db5c2",
+  unsigned int denomination; //": 1,
+  BigInt id;   // "1ceb977bb531c65f133ab8b0d60862b17369d96",
+  BigInt issuer_id; //": "23ed956e629ba35f0002eaf833ea436aea7db5c2",
   PublicKey public_mint_key;
 
   std::string sign_coins_not_after;
@@ -128,7 +130,7 @@ struct RequestMKCs {
   std::vector<unsigned int> denominations;
   unsigned int message_reference; /// Client internal message reference.
                                   /// (Integer)
-  std::vector<unsigned int> mint_key_ids;
+  std::vector<BigInt> mint_key_ids;
   //  "type": "request mint key certificates"
   static tl::expected<RequestMKCs, eError> from_string(const std::string &str);
 };
@@ -140,15 +142,15 @@ struct ResponseMKCs : Response {
 };
 
 struct Blind {
-  std::string blinded_payload_hash; // bigint
-  std::string mint_key_id;          // bigint
+  BigInt blinded_payload_hash; //bigint
+  BigInt mint_key_id; //bigint
   std::string reference;
   crow::json::wvalue to_json() const;
   static tl::expected<Blind, eError> from_json(const crow::json::rvalue &json);
 };
 
 struct BlindSignature {
-  std::string blind_signature;
+  BigInt blind_signature;
   std::string reference;
   crow::json::wvalue to_json() const;
 };
@@ -156,7 +158,7 @@ struct BlindSignature {
 struct RequestMint {
   unsigned int message_reference; /// Client internal message reference.
                                   /// (Integer)
-  std::string transaction_reference;
+  BigInt transaction_reference; 
   std::vector<Blind> blinds;
   //  "type": "request mint"
   static tl::expected<RequestMint, eError> from_string(const std::string &str);
@@ -172,14 +174,13 @@ struct Coin {
   struct Payload {
     std::string cdd_location;
     unsigned int denomination;
-    std::string issuer_id;
-    std::string mint_key_id;
+    BigInt issuer_id;
+    BigInt mint_key_id;
     std::string protocol_version;
-    std::string serial;
-
-    crow::json::wvalue to_json() const;
-    static tl::expected<Payload, eError>
-    from_json(const crow::json::rvalue &json);
+    BigInt serial;
+    
+    crow::json::wvalue to_json() const;  
+    static tl::expected<Payload,eError> from_json(const crow::json::rvalue& json);
   };
 
   Payload payload;
@@ -213,7 +214,7 @@ struct ResponseDelay : Response {
 struct RequestResume {
   unsigned int message_reference; /// Client internal message reference.
                                   /// (Integer)
-  std::string transaction_reference;
+  BigInt transaction_reference; 
   //  "type": "request resume"
   static tl::expected<RequestResume, eError>
   from_string(const std::string &str);
@@ -241,10 +242,10 @@ public:
 
   virtual const std::vector<MintKeyCert>
   getMKCs(const std::vector<unsigned int> &denominations,
-          const std::vector<unsigned int> &mint_key_ids) = 0;
+          const std::vector<BigInt> &mint_key_ids) = 0;
 
   virtual std::vector<BlindSignature>
-  mint(const std::string &transaction_reference,
+  mint(std::string const& transaction_reference,
        const std::vector<Blind> &blinds) = 0;
   virtual bool redeem(const std::vector<Coin> &coins) = 0;
 

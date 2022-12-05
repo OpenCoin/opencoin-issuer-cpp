@@ -2,15 +2,17 @@
 #include "model.hpp"
 #include <catch2/catch_test_macros.hpp>
 
-TEST_CASE("PublicKey::to_json", "[to_json]") {
-  PublicKey k{"daaa63ddda38c189b8c49020c8276adbe0a695685a...", "65537"};
-
+TEST_CASE( "PublicKey::to_json", "[to_json]" ) {
+  
+  PublicKey k //{ BigInt::from_string("daaa63ddda38c189b8c49020c8276adbe0a695685a...").value(),
+    //    BigInt::from_int(65537UL) };
+    ;
   auto json = k.to_json();
 
-  REQUIRE(json["modulus"].dump() == "\"" + k.modulus + "\"");
-  REQUIRE(json["public_exponent"].dump() == "\"" + k.public_exponent + "\"");
-  REQUIRE(json["type"].dump() == "\"rsa public key\"");
-  REQUIRE(json.keys().size() == 3);
+  REQUIRE( json["modulus"].dump() == "\"" + k.modulus.to_string() + "\""  );
+  REQUIRE( json["public_exponent"].dump() == "\"" + k.public_exponent.to_string()+"\"" );
+  REQUIRE( json["type"].dump() == "\"rsa public key\"" );
+  REQUIRE( json.keys().size() == 3 );
 }
 
 TEST_CASE("RequestCDDSerial::from_string", "[from_string]") {
@@ -76,15 +78,14 @@ TEST_CASE("RequestCDDC::from_string", "[from_string]") {
 
 TEST_CASE("RequestMKCs::from_string", "[from_string]") {
   // good case
-  auto res =
-      RequestMKCs::from_string("{"
-                               "\"denominations\": [1, 2, 5],"
-                               "\"message_reference\": 100002,"
-                               "\"mint_key_ids\": [],"
-                               "\"type\": \"request mint key certificates\""
-                               "}");
-  const std::vector<uint32_t> EXPECTED_DENOMINATIONS = {1, 2, 5};
-  const std::vector<uint32_t> EXPECTED_MINT_KEY_IDS = {};
+  auto res = RequestMKCs::from_string( "{"
+				       "\"denominations\": [1, 2, 5],"
+				       "\"message_reference\": 100002,"
+				       "\"mint_key_ids\": [],"
+				       "\"type\": \"request mint key certificates\""
+				       "}");
+  const std::vector<uint32_t> EXPECTED_DENOMINATIONS = {1,2,5};
+  const std::vector<BigInt> EXPECTED_MINT_KEY_IDS = {};
 
   REQUIRE(res.has_value() == true);
   REQUIRE(res->denominations == EXPECTED_DENOMINATIONS);
@@ -129,62 +130,59 @@ TEST_CASE("Blind::from_json", "[from_string]") {
   auto good = crow::json::load(
       "{"
       "\"blinded_payload_hash\": "
-      "\"924edb672c3345492f38341ff86b57181da4c673ef...\","
+      "\"924edb672c3345492f38341ff86b57181da4c673efd5fd76c0f64e369974c678f89ffcb1c5f77bf04911a9a63831b52675b70c06548a4d945ec5dd1d825ab08\","
       "\"mint_key_id\": \"1ceb977bb531c65f133ab8b0d60862b17369d96\","
       "\"reference\": \"a0\","
       "\"type\": \"blinded payload hash\""
       "}");
 
   auto res = Blind::from_json(good);
-  REQUIRE(res.has_value() == true);
-  REQUIRE(res->blinded_payload_hash ==
-          "924edb672c3345492f38341ff86b57181da4c673ef...");
-  REQUIRE(res->mint_key_id == "1ceb977bb531c65f133ab8b0d60862b17369d96");
-  REQUIRE(res->reference == "a0");
-  // bad cases
-  // wrong_type["blinded_payload_hash"]=
-  // "924edb672c3345492f38341ff86b57181da4c673ef..."; wrong_type["mint_key_id"]=
-  // "1ceb977bb531c65f133ab8b0d60862b17369d96"; wrong_type["reference"] = "a0";
+  REQUIRE(res.has_value()==true);
+  REQUIRE(res->blinded_payload_hash.to_string()==
+	  "924edb672c3345492f38341ff86b57181da4c673efd5fd76c0f64e369974c678f89ffcb1c5f77bf04911a9a63831b52675b70c06548a4d945ec5dd1d825ab08");
+  REQUIRE(res->mint_key_id.to_string()=="1ceb977bb531c65f133ab8b0d60862b17369d96");
+  REQUIRE(res->reference=="a0");
+  // bad cases 
+  // wrong_type["blinded_payload_hash"]= "924edb672c3345492f38341ff86b57181da4c673ef...";
+  // wrong_type["mint_key_id"]= "1ceb977bb531c65f133ab8b0d60862b17369d96";
+  // wrong_type["reference"] = "a0";
   // wrong_type["type"]= "wrong type";
 
   // res = Blind::from_json(wrong_type);
 }
 
 TEST_CASE("RequestMint::from_string", "[from_string]") {
-  // good case
-  auto res = RequestMint::from_string(
-      "{"
-      "\"blinds\": ["
-      "{"
-      "\"blinded_payload_hash\": "
-      "\"924edb672c3345492f38341ff86b57181da4c673ef...\","
-      "\"mint_key_id\": \"1ceb977bb531c65f133ab8b0d60862b17369d96\","
-      "\"reference\": \"a0\","
-      "\"type\": \"blinded payload hash\""
-      "},"
-      "{"
-      "\"blinded_payload_hash\": "
-      "\"95db92e1c46ebea5edec5e508a831263de6fb78b4c...\","
-      "\"mint_key_id\": \"f2864e5cd937dbaa4825e73a81062de162143682\","
-      "\"reference\": \"a1\","
-      "\"type\": \"blinded payload hash\""
-      "},"
-      "{"
-      "\"blinded_payload_hash\": "
-      "\"10afac98ac43eb40e996c621d5db4d2238348e3f74...\","
-      "\"mint_key_id\": \"897a16bf12bd9ba474ef7be0e3a53553a7b4ece8\","
-      "\"reference\": \"a2\","
-      "\"type\": \"blinded payload hash\""
-      "}"
-      "],"
-      "\"message_reference\": 100003,"
-      "\"transaction_reference\": \"b2221a58008a05a6c4647159c324c985\","
-      "\"type\": \"request mint\""
-      "}");
 
-  REQUIRE(res.has_value() == true);
-  REQUIRE(res->message_reference == 100003);
-  REQUIRE(res->transaction_reference == "b2221a58008a05a6c4647159c324c985");
+  // good case
+  auto res = RequestMint::from_string( "{"
+				       "\"blinds\": ["
+				       "{"
+				       "\"blinded_payload_hash\": \"924edb672c3345492f38341ff86b57181da4c673efd5fd76c0f64e369974c678f89ffcb1c5f77bf04911a9a63831b52675b70c06548a4d945ec5dd1d825ab08\","
+				       "\"mint_key_id\": \"1ceb977bb531c65f133ab8b0d60862b17369d96\","
+				       "\"reference\": \"a0\","
+				       "\"type\": \"blinded payload hash\""
+				       "},"
+				       "{"
+				       "\"blinded_payload_hash\": \"95db92e1c46ebea5edec5e508a831263de6fb78b4cf9187593f6af815b51db9db35ad5eaf2c0c83bd7e13c999df4f0f1af65b367eb7c2b6addb9735dce156b5\","
+				       "\"mint_key_id\": \"f2864e5cd937dbaa4825e73a81062de162143682\","
+				       "\"reference\": \"a1\","
+				       "\"type\": \"blinded payload hash\""
+				       "},"
+				       "{"
+				       "\"blinded_payload_hash\": \"10afac98ac43eb40e996c621d5db4d2238348e3f74850856d940955da0fd24fa4d3aee79da1e9da24e85cf9cefd96feaca5b26a9353a3d9fcb4bd34145046ce8\","
+				       "\"mint_key_id\": \"897a16bf12bd9ba474ef7be0e3a53553a7b4ece8\","
+				       "\"reference\": \"a2\","
+				       "\"type\": \"blinded payload hash\""
+				       "}"
+				       "],"
+				       "\"message_reference\": 100003,"
+				       "\"transaction_reference\": \"b2221a58008a05a6c4647159c324c985\","
+				       "\"type\": \"request mint\""
+				      "}");
+
+  REQUIRE(res.has_value()==true);
+  REQUIRE(res->message_reference==100003);
+  REQUIRE(res->transaction_reference.to_string() == "b2221a58008a05a6c4647159c324c985");
   /// \todo check blinds
 
   // bad cases
@@ -228,7 +226,7 @@ TEST_CASE("RequestRenew::from_string", "[from_string]") {
       "  \"blinds\": ["
       "    {"
       "      \"blinded_payload_hash\": "
-      "\"7ed0cda1c1b36f544514b12848b8436974b7b9f6c7...\","
+      "\"7ed0cda1c1b36f544514b12848b8436974b7b9f6c7231ebcc566678e3478d3279db03872e4710413ad20a55d56ef12fb1800ac187195322535a626e178931cf9\","
       "      \"mint_key_id\": \"f2864e5cd937dbaa4825e73a81062de162143682\","
       "      \"reference\": \"b0\","
       "      \"type\": \"blinded payload hash\""
@@ -280,17 +278,16 @@ TEST_CASE("RequestRenew::from_string", "[from_string]") {
 
 TEST_CASE("RequestResume::from_string", "[from_string]") {
   // good case
-  auto res = RequestResume::from_string(
-      "{"
-      "\"message_reference\": 100005,"
-      "\"transaction_reference\": \"ad45f23d3b1a11df587fd2803bab6c39\","
-      "\"type\": \"request resume\""
-      "}");
+  auto res = RequestResume::from_string( "{"
+				       "\"message_reference\": 100005,"
+				       "\"transaction_reference\": \"ad45f23d3b1a11df587fd2803bab6c39\","
+				       "\"type\": \"request resume\""
+				       "}");
 
-  REQUIRE(res.has_value() == true);
-  REQUIRE(res->message_reference == 100005);
-  REQUIRE(res->transaction_reference == "ad45f23d3b1a11df587fd2803bab6c39");
-
+  REQUIRE(res.has_value()==true);
+  REQUIRE(res->message_reference==100005);
+  REQUIRE(res->transaction_reference.to_string()=="ad45f23d3b1a11df587fd2803bab6c39");
+  
   // bad cases
   res = RequestResume::from_string("");
   REQUIRE(res.has_value() == false);
