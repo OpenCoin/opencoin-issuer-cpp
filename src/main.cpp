@@ -1,96 +1,129 @@
 #include "crow.h"
+#include "crow/common.h"
+#include "crow/http_parser_merged.h"
+#include "crow/http_response.h"
 #include "model.hpp"
 
-int main()
-{
-    crow::SimpleApp app;
-    std::shared_ptr<Model> model = Model::getModel("simple");
+int main() {
+  crow::SimpleApp app;
+  std::shared_ptr<Model> model = Model::getModel("simple");
 
-    CROW_ROUTE(app, "/cddc")
-      ([&model](const crow::request& req){
-	auto req_cddc = RequestCDDC::from_string(req.body);
-	if (!req_cddc) {
-	  return crow::response(crow::status::BAD_REQUEST);
-	} else {
-	  ResponseCDDC res;
-	  // TBD use serial from req
-	  res.cddc = model->getCDDC();
-	  res.message_reference = req_cddc->message_reference;
-	  res.status_code = crow::status::OK;
-	  return crow::response(res.to_json());
-	}
+  CROW_ROUTE(app, "/cddc")
+      .methods(crow::HTTPMethod::POST)([&model](const crow::request &req) {
+        auto req_cddc = RequestCDDC::from_string(req.body);
+        if (!req_cddc) {
+          return crow::response(crow::status::BAD_REQUEST);
+        } else {
+          ResponseCDDC res;
+          res.message_reference = req_cddc->message_reference;
+          auto cddc = model->getCDDC(req_cddc->cdd_serial);
+          if (!cddc) {
+            res.status_code = crow::status::NOT_FOUND;
+          } else {
+            res.cddc = *cddc.value();
+            res.status_code = crow::status::OK;
+          }
+          return crow::response(res.to_json());
+        }
       });
 
-    CROW_ROUTE(app, "/cddc/serial")
-      ([&model](const crow::request& request){
-	auto req = RequestCDDSerial::from_string(request.body);
-	if (!req) {
-	  return crow::response(crow::status::BAD_REQUEST);
-	} else {
-	  // \todo check serial input
-	  ResponseCDDSerial res;
-	  res.cdd_serial = model->getCurrentCDDC().cdd.cdd_serial;
-	  res.message_reference = req->message_reference;
-	  res.status_code = crow::status::OK;
-	  return crow::response(res.to_json());
-	}
-    });
+  CROW_ROUTE(app, "/cddc/serial")
+      .methods(crow::HTTPMethod::POST)([&model](const crow::request &request) {
+        auto req = RequestCDDSerial::from_string(request.body);
+        if (!req) {
+          return crow::response(crow::status::BAD_REQUEST);
+        } else {
+          ResponseCDDSerial res;
+          res.message_reference = req->message_reference;
 
-    CROW_ROUTE(app, "/mkcs")
-      ([&model](const crow::request& request){
-	auto req = RequestMKCs::from_string(request.body);
-	if (!req) {
-	  return crow::response(crow::status::BAD_REQUEST);
-	} else {
-	  // \todo implement request
-	  return crow::response(crow::status::NOT_IMPLEMENTED);
-	}
+          auto cddc = model->getCurrentCDDC();
+          if (!cddc) {
+            res.status_code = crow::status::NOT_FOUND;
+          } else {
+            res.cdd_serial = (*cddc)->cdd.cdd_serial;
+            res.status_code = crow::status::OK;
+          }
+          return crow::response(res.to_json());
+        }
       });
 
-    CROW_ROUTE(app, "/mint").methods(crow::HTTPMethod::GET)
-      ([&model](const crow::request& request){
-	auto req = RequestMint::from_string(request.body);
-	if (!req) {
-	  return crow::response(crow::status::BAD_REQUEST);
-	} else {
-	  // \todo implement request
-	  return crow::response(crow::status::NOT_IMPLEMENTED);
-	}
+  CROW_ROUTE(app, "/mkcs")
+      .methods(crow::HTTPMethod::POST)([&model](const crow::request &request) {
+        auto req = RequestMKCs::from_string(request.body);
+        if (!req) {
+          return crow::response(crow::status::BAD_REQUEST);
+        } else {
+          ResponseMKCs res;
+          res.message_reference = req->message_reference;
+          res.keys = model->getMKCs(req->denominations, req->mint_key_ids);
+          res.status_code = crow::status::OK;
+          return crow::response(res.to_json());
+        }
       });
 
+  CROW_ROUTE(app, "/mint")
+      .methods(crow::HTTPMethod::POST)([&model](const crow::request &request) {
+        auto req = RequestMint::from_string(request.body);
+        if (!req) {
+          return crow::response(crow::status::BAD_REQUEST);
+        } else {
+          ResponseMint res;
+          res.message_reference = req->message_reference;
 
-    CROW_ROUTE(app, "/renew").methods(crow::HTTPMethod::GET)
-      ([&model](const crow::request& request){
-	auto req = RequestMint::from_string(request.body);
-	if (!req) {
-	  return crow::response(crow::status::BAD_REQUEST);
-	} else {
-	  // \todo implement request
-	  return crow::response(crow::status::NOT_IMPLEMENTED);
-	}
+          auto minted = model->mint(req->transaction_reference, req->blinds);
+
+          res.blind_signatures = minted;
+          res.status_code = crow::status::OK;
+
+          return crow::response(res.to_json());
+        }
       });
 
-    CROW_ROUTE(app, "/resume").methods(crow::HTTPMethod::GET)
-      ([&model](const crow::request& request){
-	auto req = RequestResume::from_string(request.body);
-	if (!req) {
-	  return crow::response(crow::status::BAD_REQUEST);
-	} else {
-	  // \todo implement request
-	  return crow::response(crow::status::NOT_IMPLEMENTED);
-	}
+  CROW_ROUTE(app, "/renew")
+      .methods(crow::HTTPMethod::POST)([&model](const crow::request &request) {
+        auto req = RequestRenew::from_string(request.body);
+        if (!req) {
+          return crow::response(crow::status::BAD_REQUEST);
+        } else {
+          // \todo implement ResponseDelay
+          ResponseMint res;
+          res.message_reference = req->message_reference;
+          res.status_code = crow::status::OK;
+          res.blind_signatures =
+              model->mint(req->transaction_reference, req->blinds);
+          return crow::response(res.to_json());
+        }
       });
 
-    CROW_ROUTE(app, "/redeem").methods(crow::HTTPMethod::GET)
-      ([&model](const crow::request& request){
-	auto req = RequestRedeem::from_string(request.body);
-	if (!req) {
-	  return crow::response(crow::status::BAD_REQUEST);
-	} else {
-	  // \todo implement request
-	  return crow::response(crow::status::NOT_IMPLEMENTED);
-	}
+  CROW_ROUTE(app, "/resume")
+      .methods(crow::HTTPMethod::POST)([](const crow::request &request) {
+        auto req = RequestResume::from_string(request.body);
+        if (!req) {
+          return crow::response(crow::status::BAD_REQUEST);
+        } else {
+          // \todo implement request
+          ResponseMint res;
+          res.message_reference = req->message_reference;
+          res.status_code = crow::status::NOT_IMPLEMENTED; // crow::status::OK;
+          return crow::response(crow::status::NOT_IMPLEMENTED);
+        }
       });
 
-    app.port(18080).run();
+  CROW_ROUTE(app, "/redeem")
+      .methods(crow::HTTPMethod::POST)([&model](const crow::request &request) {
+        auto req = RequestRedeem::from_string(request.body);
+        if (!req) {
+          return crow::response(crow::status::BAD_REQUEST);
+        } else {
+          ResponseRedeem res;
+          res.message_reference = req->message_reference;
+          bool success = model->redeem(req->coins);
+          res.status_code =
+              success ? crow::status::OK : crow::status::NOT_FOUND;
+
+          return crow::response(res.to_json());
+        }
+      });
+
+  app.port(18080).run();
 }

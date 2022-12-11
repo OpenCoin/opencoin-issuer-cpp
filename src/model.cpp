@@ -1,36 +1,34 @@
 #include "model.hpp"
 #include "crow/json.h"
 
-#define TO_JSON(name) r[#name]=name
-#define TO_JSON_JSON(name) r[#name]=name.to_json()
-#define TO_JSON_ARRAY(name) r[#name]=list_to_json(name)
+#define TO_JSON(name) r[#name] = name
+#define TO_JSON_JSON(name) r[#name] = name.to_json()
+#define TO_JSON_ARRAY(name) r[#name] = list_to_json(name)
 
 template <class T>
-crow::json::wvalue list_to_json(const std::vector<T>& array) {
+crow::json::wvalue list_to_json(const std::vector<T> &array) {
   crow::json::wvalue::list l;
-  for(auto item:array)
+  for (auto item : array)
     l.push_back(item.to_json());
   return crow::json::wvalue(l);
 }
 
-crow::json::wvalue list_to_json(const std::vector<unsigned int>& array) {
+crow::json::wvalue list_to_json(const std::vector<unsigned int> &array) {
   crow::json::wvalue::list l;
-  for(auto item:array)
+  for (auto item : array)
     l.push_back(item);
   return crow::json::wvalue(l);
 }
-
 
 crow::json::wvalue PublicKey::to_json() const {
   crow::json::wvalue r;
   TO_JSON(modulus);
   TO_JSON(public_exponent);
-  r["type"]="rsa public key";
+  r["type"] = "rsa public key";
   return r;
 }
 
-crow::json::wvalue WeightedUrl::to_json() const
-{
+crow::json::wvalue WeightedUrl::to_json() const {
   crow::json::wvalue::list l;
   crow::json::wvalue w(weight);
 
@@ -48,26 +46,26 @@ crow::json::wvalue CDD::to_json() const {
   TO_JSON(cdd_serial);
   TO_JSON(cdd_signing_date);
   TO_JSON(currency_divisor);
-  TO_JSON( currency_name);
+  TO_JSON(currency_name);
   TO_JSON_ARRAY(denominations);
   TO_JSON(id);
   TO_JSON_ARRAY(info_service);
   TO_JSON(issuer_cipher_suite);
   TO_JSON_JSON(issuer_public_master_key);
   TO_JSON_ARRAY(mint_service);
-  TO_JSON(protocol_version); 
+  TO_JSON(protocol_version);
   TO_JSON_ARRAY(redeem_service);
-  TO_JSON_ARRAY(renew_service); 
+  TO_JSON_ARRAY(renew_service);
 
-  r["type"]= "cdd";
+  r["type"] = "cdd";
   return r;
 }
 
-crow::json::wvalue CDDC::to_json() const{  
+crow::json::wvalue CDDC::to_json() const {
   crow::json::wvalue r;
   TO_JSON_JSON(cdd);
   TO_JSON(signature);
-  r["type"]= "cdd certificate";
+  r["type"] = "cdd certificate";
   return r;
 }
 
@@ -80,25 +78,23 @@ crow::json::wvalue MintKey::to_json() const {
   TO_JSON(id);
   TO_JSON(issuer_id);
   TO_JSON_JSON(public_mint_key);
-  
+
   TO_JSON(sign_coins_not_after);
   TO_JSON(sign_coins_not_before);
-  
-  r["type"]= "mint key";
-  return r;
-}  
 
-
-crow::json::wvalue MintKeyCert::to_json() const {  
-  crow::json::wvalue r;
-  TO_JSON_JSON(mint_key);
-  TO_JSON(signature);
-  r["type"]= "mint key certificate";
+  r["type"] = "mint key";
   return r;
 }
 
-crow::json::wvalue Response::to_json() const
-{
+crow::json::wvalue MintKeyCert::to_json() const {
+  crow::json::wvalue r;
+  TO_JSON_JSON(mint_key);
+  TO_JSON(signature);
+  r["type"] = "mint key certificate";
+  return r;
+}
+
+crow::json::wvalue Response::to_json() const {
   crow::json::wvalue r;
   TO_JSON(message_reference);
   TO_JSON(status_code);
@@ -106,104 +102,93 @@ crow::json::wvalue Response::to_json() const
   return r;
 }
 
-
-crow::json::wvalue ResponseCDDSerial::to_json() const
-{
+crow::json::wvalue ResponseCDDSerial::to_json() const {
   crow::json::wvalue r = Response::to_json();
   TO_JSON(cdd_serial);
-  
-  r["type"]= "response cdd serial";
+
+  r["type"] = "response cdd serial";
   return r;
 }
 
-tl::expected<RequestCDDSerial,eError>
-RequestCDDSerial::from_string(const std::string& str)
-{
+tl::expected<RequestCDDSerial, eError>
+RequestCDDSerial::from_string(const std::string &str) {
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if ( !json.has("type") || !json.has("message_reference")) {
+  } else if (!json.has("type") || !json.has("message_reference")) {
     return tl::make_unexpected(eError::JSON_ERROR);
-  } else if ( json["type"]!="request cdd serial") {
+  } else if (json["type"] != "request cdd serial") {
     return tl::make_unexpected(eError::JSON_ERROR);
-  } else {  
+  } else {
     RequestCDDSerial r;
-    r.message_reference= json["message_reference"].u();
+    r.message_reference = json["message_reference"].u();
     return r;
   }
 }
 
-crow::json::wvalue ResponseCDDC::to_json() const
-{
+crow::json::wvalue ResponseCDDC::to_json() const {
   crow::json::wvalue r = Response::to_json();
   TO_JSON_JSON(cddc);
-  r["type"]= "response cdd serial";
+  r["type"] = "response cdd serial";
   return r;
 }
 
-tl::expected<RequestCDDC,eError>
-RequestCDDC::from_string(const std::string& str)
-{
+tl::expected<RequestCDDC, eError>
+RequestCDDC::from_string(const std::string &str) {
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if ( !( json.has("type")
-		 && json.has("message_reference")
-		 && json.has("cdd_serial")
-		 ) ) {
+  } else if (!(json.has("type") && json.has("message_reference") &&
+               json.has("cdd_serial"))) {
     return tl::make_unexpected(eError::JSON_MISSING_KEY);
-  }  else if ( json["type"]!="request cddc" ) {
+  } else if (json["type"] != "request cddc") {
     return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
-  } else {  
+  } else {
     RequestCDDC r;
-    r.cdd_serial=json["cdd_serial"].u();
-    r.message_reference= json["message_reference"].u();
+    r.cdd_serial = json["cdd_serial"].u();
+    r.message_reference = json["message_reference"].u();
     return r;
   }
 }
 
-tl::expected<RequestMKCs,eError>
-RequestMKCs::from_string(const std::string& str) {
+tl::expected<RequestMKCs, eError>
+RequestMKCs::from_string(const std::string &str) {
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if ( !(json.has("denominations")
-		&& json.has("message_reference")
-		&& json.has("mint_key_ids")
-		&& json.has("type")
-		 ) ) {
+  } else if (!(json.has("denominations") && json.has("message_reference") &&
+               json.has("mint_key_ids") && json.has("type"))) {
     return tl::make_unexpected(eError::JSON_MISSING_KEY);
-  }  else if ( json["type"]!="request mint key certificates" ) {
+  } else if (json["type"] != "request mint key certificates") {
     return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
-  } else {  
+  } else {
     RequestMKCs r;
-    r.message_reference= json["message_reference"].u();
+    r.message_reference = json["message_reference"].u();
 
     auto denominations = json["denominations"];
-    if ( denominations.t()!=crow::json::type::List) {
+    if (denominations.t() != crow::json::type::List) {
       return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
     } else {
-      for (auto d: denominations.lo()) {
-	r.denominations.push_back(d.u());
+      for (auto d : denominations.lo()) {
+        r.denominations.push_back(d.u());
       }
     }
     auto mint_key_ids = json["mint_key_ids"];
-    if ( mint_key_ids.t()!=crow::json::type::List) {
+    if (mint_key_ids.t() != crow::json::type::List) {
       return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
     } else {
-      for (auto k: mint_key_ids.lo()) {
-	r.mint_key_ids.push_back(k.u());
+      for (auto k : mint_key_ids.lo()) {
+        r.mint_key_ids.push_back(k.u());
       }
     }
     return r;
   }
 }
 
-
-crow::json::wvalue ResponseMKCs::to_json() const{  
+crow::json::wvalue ResponseMKCs::to_json() const {
   crow::json::wvalue r = Response::to_json();
   TO_JSON_ARRAY(keys);
-  r["type"]= "response mint key certificates";
+  r["type"] = "response mint key certificates";
   return r;
 }
 
@@ -212,21 +197,17 @@ crow::json::wvalue Blind::to_json() const {
   TO_JSON(blinded_payload_hash);
   TO_JSON(mint_key_id);
   TO_JSON(reference);
-  r["type"]= "blinded payload hash";
+  r["type"] = "blinded payload hash";
   return r;
-} 
+}
 
-tl::expected<Blind,eError> Blind::from_json(const crow::json::rvalue& json)
-{
-  if ( !( json.has("type")
-	  && json.has("blinded_payload_hash")
-	  && json.has("mint_key_id")
-	  && json.has("reference")
-	  ) ) {
+tl::expected<Blind, eError> Blind::from_json(const crow::json::rvalue &json) {
+  if (!(json.has("type") && json.has("blinded_payload_hash") &&
+        json.has("mint_key_id") && json.has("reference"))) {
     return tl::make_unexpected(eError::JSON_ERROR);
-  }  else if ( json["type"]!="blinded payload hash" ) {
+  } else if (json["type"] != "blinded payload hash") {
     return tl::make_unexpected(eError::JSON_ERROR);
-  } else {  
+  } else {
     Blind r;
     r.blinded_payload_hash = json["blinded_payload_hash"].s();
     r.mint_key_id = json["mint_key_id"].s();
@@ -239,40 +220,36 @@ crow::json::wvalue BlindSignature::to_json() const {
   crow::json::wvalue r;
   TO_JSON(blind_signature);
   TO_JSON(reference);
-  r["type"]= "blind signature";
+  r["type"] = "blind signature";
   return r;
-  
 }
 
-tl::expected<RequestMint,eError>
-RequestMint::from_string(const std::string& str){
+tl::expected<RequestMint, eError>
+RequestMint::from_string(const std::string &str) {
   std::vector<Blind> blinds;
   //  "type": "request mint"
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if ( !( json.has("type")
-		 && json.has("message_reference")
-		 && json.has("transaction_reference")
-		 && json.has("blinds")
-		 ) ) {
+  } else if (!(json.has("type") && json.has("message_reference") &&
+               json.has("transaction_reference") && json.has("blinds"))) {
     return tl::make_unexpected(eError::JSON_ERROR);
-  }  else if ( json["type"]!="request mint" ) {
+  } else if (json["type"] != "request mint") {
     return tl::make_unexpected(eError::JSON_ERROR);
-  } else {  
+  } else {
     RequestMint r;
-    r.message_reference= json["message_reference"].u();
-    r.transaction_reference= json["transaction_reference"].s();
-    if (json["blinds"].t()!=crow::json::type::List) {
+    r.message_reference = json["message_reference"].u();
+    r.transaction_reference = json["transaction_reference"].s();
+    if (json["blinds"].t() != crow::json::type::List) {
       return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
     }
 
-    for (auto item: json["blinds"])  {
+    for (auto item : json["blinds"]) {
       auto b = Blind::from_json(item);
       if (!b.has_value()) {
-	return tl::make_unexpected(b.error());
+        return tl::make_unexpected(b.error());
       } else {
-	r.blinds.push_back(b.value());
+        r.blinds.push_back(b.value());
       }
     }
     return r;
@@ -282,7 +259,7 @@ RequestMint::from_string(const std::string& str){
 crow::json::wvalue ResponseMint::to_json() const {
   crow::json::wvalue r = Response::to_json();
   TO_JSON_ARRAY(blind_signatures);
-  r["type"]= "response mint";
+  r["type"] = "response mint";
   return r;
 }
 
@@ -295,57 +272,51 @@ crow::json::wvalue Coin::Payload::to_json() const {
   TO_JSON(protocol_version);
   TO_JSON(serial);
 
-  r["type"]= "payload";
+  r["type"] = "payload";
   return r;
 }
 
-crow::json::wvalue Coin::to_json() const
-{
+crow::json::wvalue Coin::to_json() const {
   crow::json::wvalue r;
   TO_JSON_JSON(payload);
   TO_JSON(signature);
-  r["type"]= "coin";
+  r["type"] = "coin";
   return r;
 }
 
-tl::expected<Coin::Payload,eError> Coin::Payload::from_json(const crow::json::rvalue& json) {
-  if ( !( json.has("cdd_location")
-	  && json.has("denomination")
-	  && json.has("issuer_id")
-	  && json.has("mint_key_id")
-	  && json.has("protocol_version")
-	  && json.has("serial")
-	  && json.has("type"))) {
+tl::expected<Coin::Payload, eError>
+Coin::Payload::from_json(const crow::json::rvalue &json) {
+  if (!(json.has("cdd_location") && json.has("denomination") &&
+        json.has("issuer_id") && json.has("mint_key_id") &&
+        json.has("protocol_version") && json.has("serial") &&
+        json.has("type"))) {
     return tl::make_unexpected(eError::JSON_ERROR);
-  }  else if ( json["type"]!="payload" ) {
+  } else if (json["type"] != "payload") {
     return tl::make_unexpected(eError::JSON_ERROR);
-  } else {  
+  } else {
     Coin::Payload payload;
     payload.cdd_location = json["cdd_location"].s();
     payload.denomination = json["denomination"].u();
-    payload.issuer_id    = json["issuer_id"].s();
-    payload.mint_key_id  = json["mint_key_id"].s();
+    payload.issuer_id = json["issuer_id"].s();
+    payload.mint_key_id = json["mint_key_id"].s();
     payload.protocol_version = json["protocol_version"].s();
-    payload.serial      = json["serial"].s();
+    payload.serial = json["serial"].s();
     return payload;
   }
 }
 
-tl::expected<Coin,eError> Coin::from_json(const crow::json::rvalue& json) {
-  if ( !( json.has("type")
-	  && json.has("payload")
-	  && json.has("signature")
-	  ) ) {
+tl::expected<Coin, eError> Coin::from_json(const crow::json::rvalue &json) {
+  if (!(json.has("type") && json.has("payload") && json.has("signature"))) {
     return tl::make_unexpected(eError::JSON_ERROR);
-  }  else if ( json["type"]!="coin" ) {
+  } else if (json["type"] != "coin") {
     return tl::make_unexpected(eError::JSON_ERROR);
-  } else {  
+  } else {
     auto pl = Payload::from_json(json["payload"]);
     if (!pl.has_value()) {
       return tl::make_unexpected(pl.error());
-    } else { 
+    } else {
       Coin c;
-      c.payload = pl.value(); 
+      c.payload = pl.value();
       c.signature = json["signature"].s();
       return c;
     }
@@ -356,137 +327,158 @@ crow::json::wvalue CoinStack::to_json() const {
   crow::json::wvalue r;
   TO_JSON_ARRAY(coins);
   TO_JSON(subject);
-  r["type"]= "coinstack";
+  r["type"] = "coinstack";
   return r;
-}  
+}
 
-
-tl::expected<RequestRenew,eError>
-RequestRenew::from_string(const std::string& str) {
+tl::expected<RequestRenew, eError>
+RequestRenew::from_string(const std::string &str) {
   auto json = crow::json::load(str);
 
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if ( !( json.has("blinds")
-		 && json.has("coins")
-		 && json.has("transaction_reference")
-		 && json.has("message_reference")
-		 && json.has("type")
-		 ) ) {
+  } else if (!(json.has("blinds") && json.has("coins") &&
+               json.has("transaction_reference") &&
+               json.has("message_reference") && json.has("type"))) {
     return tl::make_unexpected(eError::JSON_MISSING_KEY);
-  }  else if ( json["type"]!="request renew" ) {
+  } else if (json["type"] != "request renew") {
     return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
-  } else if (    (json["coins"].t()!=crow::json::type::List)
-	      || (json["blinds"].t()!=crow::json::type::List) ) {
-      return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
-  } else {  
+  } else if ((json["coins"].t() != crow::json::type::List) ||
+             (json["blinds"].t() != crow::json::type::List)) {
+    return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
+  } else {
     RequestRenew r;
 
-    for (auto item: json["coins"])  {
+    for (auto item : json["coins"]) {
       auto coin = Coin::from_json(item);
       if (!coin.has_value()) {
-	return tl::make_unexpected(coin.error());
+        return tl::make_unexpected(coin.error());
       } else {
-	r.coins.push_back(coin.value());
+        r.coins.push_back(coin.value());
       }
     }
-    
-    for (auto item: json["blinds"])  {
+
+    for (auto item : json["blinds"]) {
       auto blind = Blind::from_json(item);
       if (!blind.has_value()) {
-	return tl::make_unexpected(blind.error());
+        return tl::make_unexpected(blind.error());
       } else {
-	r.blinds.push_back(blind.value());
+        r.blinds.push_back(blind.value());
       }
     }
- 
+
     r.message_reference = json["message_reference"].u();
-    r.transaction_reference = json["transaction_reference"].s();  
+    r.transaction_reference = json["transaction_reference"].s();
     return r;
   }
 }
 
-crow::json::wvalue ResponseDelay::to_json() const {  
+crow::json::wvalue ResponseDelay::to_json() const {
   crow::json::wvalue r = Response::to_json();
-  r["type"]= "response delay";
+  r["type"] = "response delay";
   return r;
 }
 
-tl::expected<RequestResume,eError>
-RequestResume::from_string(const std::string& str) {
+tl::expected<RequestResume, eError>
+RequestResume::from_string(const std::string &str) {
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if ( !( json.has("transaction_reference")
-		 && json.has("message_reference")
-		 && json.has("type")
-		 ) ) {
+  } else if (!(json.has("transaction_reference") &&
+               json.has("message_reference") && json.has("type"))) {
     return tl::make_unexpected(eError::JSON_MISSING_KEY);
-  }  else if ( json["type"]!="request resume" ) {
+  } else if (json["type"] != "request resume") {
     return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
-  } else {  
+  } else {
     RequestResume r;
     r.message_reference = json["message_reference"].u();
-    r.transaction_reference = json["transaction_reference"].s();  
+    r.transaction_reference = json["transaction_reference"].s();
     return r;
   }
 }
 
-tl::expected<RequestRedeem,eError>
-RequestRedeem::from_string(const std::string& str) {
-  //  "type": 
-auto json = crow::json::load(str);
+tl::expected<RequestRedeem, eError>
+RequestRedeem::from_string(const std::string &str) {
+  //  "type":
+  auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
-  } else if ( !( json.has("coins")
-		 && json.has("message_reference")
-		 && json.has("type")
-		 ) ) {
+  } else if (!(json.has("coins") && json.has("message_reference") &&
+               json.has("type"))) {
     return tl::make_unexpected(eError::JSON_MISSING_KEY);
-  }  else if ( json["type"]!="request redeem" ) {
+  } else if (json["type"] != "request redeem") {
     return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
-  } else {  
+  } else {
     RequestRedeem r;
     r.message_reference = json["message_reference"].u();
-    if (json["coins"].t()!=crow::json::type::List) {
+    if (json["coins"].t() != crow::json::type::List) {
       return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
     }
 
-    for (auto item: json["coins"])  {
+    for (auto item : json["coins"]) {
       auto coin = Coin::from_json(item);
       if (!coin.has_value()) {
-	return tl::make_unexpected(coin.error());
+        return tl::make_unexpected(coin.error());
       } else {
-	r.coins.push_back(coin.value());
+        r.coins.push_back(coin.value());
       }
     }
     return r;
   }
 }
 
-crow::json::wvalue ResponseReedem::to_json() const {
+crow::json::wvalue ResponseRedeem::to_json() const {
   crow::json::wvalue r = Response::to_json();
-  r["type"]= "response redeem";
+  r["type"] = "response redeem";
   return r;
-}  
+}
 
+using std::cout;
+using std::endl;
 
 /** this is for now our sample model */
 class DefaultModel : public Model {
 public:
-  
   DefaultModel() {}
-  const CDDC& getCDDC() override {return m_cddc; };
-  const CDDC& getCurrentCDDC() override {return m_cddc; };
-  void mint() override {};
+  tl::expected<CDDC *, bool> getCDDC(unsigned int cdd_serial) override {
+    cout << __FUNCTION__ << "(" << cdd_serial << ")" << endl;
+    return &m_cddc;
+  };
+
+  tl::expected<CDDC *, bool> getCurrentCDDC() override {
+    cout << __FUNCTION__ << "()" << endl;
+
+    return &m_cddc;
+  }
+
+  std::vector<BlindSignature> mint(const std::string &transaction_reference,
+                                   const std::vector<Blind> &blinds) override {
+    std::vector<BlindSignature> res;
+    cout << __FUNCTION__ << "("
+         << ")" << endl;
+
+    return res;
+  }
+
+  const std::vector<MintKeyCert>
+  getMKCs(const std::vector<unsigned int> &denominations,
+          const std::vector<unsigned int> &mint_key_ids) override {
+    std::vector<MintKeyCert> res;
+    cout << __FUNCTION__ << endl;
+    return res;
+  }
+  bool redeem(const std::vector<Coin> &coins) override {
+    cout << __FUNCTION__ << endl;
+    return false;
+  }
 
 private:
   CDDC m_cddc;
 };
 
-std::unique_ptr<Model> Model::getModel(const std::string& /*backend_name*/)
-{
-//:wq
-//if (backend_name=="default")
-    return std::make_unique<DefaultModel>();
+std::unique_ptr<Model> Model::getModel(const std::string & /*backend_name*/) {
+  cout << __FUNCTION__ << endl;
+  //:wq
+  // if (backend_name=="default")
+  return std::make_unique<DefaultModel>();
 }
