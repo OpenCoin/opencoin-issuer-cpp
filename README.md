@@ -9,12 +9,21 @@ actually it is a work in progress.
 
 ## Protocol Questions
 
-- What is signed as cdd - only the content of the cdd item with curly braces 
++ What is signed as cdd - only the content of the cdd item with curly braces 
 or also the key?
-- the weighted URL as array has a different js encoding as other elements
++ the weighted URL as array has a different js encoding as other elements
++ Clarify PSS usage (see https://crypto.stackexchange.com/questions/12707/usability-of-padding-scheme-in-blinded-rsa-signature)
 
 ## TODO
 
-- [x] complete from_json conversions
-- [x] complete tests
-- [x] drone config
++ [ ] bigint type for big integers encoded as string
++ [ ] blinding utilizing crypto++
+
+### Blinding Notes
+
+https://stackoverflow.com/questions/47860570/how-to-create-and-verify-blind-rsa-signatures-with-crypto
+
+https://crypto.stackexchange.com/questions/12707/usability-of-padding-scheme-in-blinded-rsa-signature
+
+https://crypto.stackexchange.com/questions/54085/is-there-a-standard-padding-format-for-rsa-blind-signatures/60728#60728
+https://crypto.stackexchange.com/questions/5626/rsa-blind-signatures-in-practice
