@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['blind_0',['Blind',['../structBlind.html',1,'']]],
-  ['blindsignature_1',['BlindSignature',['../structBlindSignature.html',1,'']]]
+  ['bigint_0',['BigInt',['../structBigInt.html',1,'']]],
+  ['blind_1',['Blind',['../structBlind.html',1,'']]],
+  ['blindsignature_2',['BlindSignature',['../structBlindSignature.html',1,'']]]
 ];

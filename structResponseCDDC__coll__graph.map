@@ -1,7 +1,8 @@
 <map id="ResponseCDDC" name="ResponseCDDC">
-<area shape="rect" id="node1" title=" " alt="" coords="8,273,131,300"/>
-<area shape="rect" id="node2" href="$structResponse.html" title=" " alt="" coords="5,184,91,211"/>
-<area shape="rect" id="node3" href="$structCDDC.html" title=" " alt="" coords="115,184,175,211"/>
-<area shape="rect" id="node4" href="$structCDD.html" title=" " alt="" coords="120,95,171,121"/>
-<area shape="rect" id="node5" href="$structPublicKey.html" title=" " alt="" coords="103,5,188,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="8,377,131,404"/>
+<area shape="rect" id="node2" href="$structResponse.html" title=" " alt="" coords="5,288,91,315"/>
+<area shape="rect" id="node3" href="$structCDDC.html" title=" " alt="" coords="115,288,175,315"/>
+<area shape="rect" id="node4" href="$structCDD.html" title=" " alt="" coords="120,199,171,225"/>
+<area shape="rect" id="node5" href="$structPublicKey.html" title=" " alt="" coords="155,109,240,136"/>
+<area shape="rect" id="node6" href="$structBigInt.html" title=" " alt="" coords="105,5,165,32"/>
 </map>

@@ -88,12 +88,12 @@ virtual tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &
 <tr class="memitem:a2a6e8779505b4c9b2e61328a9e870981"><td class="memItemLeft" align="right" valign="top"><a id="a2a6e8779505b4c9b2e61328a9e870981"></a>
 virtual tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrentCDDC</b> ()=0</td></tr>
 <tr class="separator:a2a6e8779505b4c9b2e61328a9e870981"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ec765a80c551dbc82eb9caa7f32ae66"><td class="memItemLeft" align="right" valign="top"><a id="a9ec765a80c551dbc82eb9caa7f32ae66"></a>
-virtual const std::vector&lt; <a class="el" href="structMintKeyCert.html">MintKeyCert</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getMKCs</b> (const std::vector&lt; unsigned int &gt; &amp;denominations, const std::vector&lt; unsigned int &gt; &amp;mint_key_ids)=0</td></tr>
-<tr class="separator:a9ec765a80c551dbc82eb9caa7f32ae66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a74af1aee8923c2b42b2525b11aa19716"><td class="memItemLeft" align="right" valign="top"><a id="a74af1aee8923c2b42b2525b11aa19716"></a>
-virtual std::vector&lt; <a class="el" href="structBlindSignature.html">BlindSignature</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mint</b> (const std::string &amp;transaction_reference, const std::vector&lt; <a class="el" href="structBlind.html">Blind</a> &gt; &amp;blinds)=0</td></tr>
-<tr class="separator:a74af1aee8923c2b42b2525b11aa19716"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed0ea733af94f2d4e08c24b2fa4df56f"><td class="memItemLeft" align="right" valign="top"><a id="aed0ea733af94f2d4e08c24b2fa4df56f"></a>
+virtual const std::vector&lt; <a class="el" href="structMintKeyCert.html">MintKeyCert</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getMKCs</b> (const std::vector&lt; unsigned int &gt; &amp;denominations, const std::vector&lt; <a class="el" href="structBigInt.html">BigInt</a> &gt; &amp;mint_key_ids)=0</td></tr>
+<tr class="separator:aed0ea733af94f2d4e08c24b2fa4df56f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ece13ffd6258825feaaa884247ca6e2"><td class="memItemLeft" align="right" valign="top"><a id="a0ece13ffd6258825feaaa884247ca6e2"></a>
+virtual std::vector&lt; <a class="el" href="structBlindSignature.html">BlindSignature</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mint</b> (std::string const &amp;transaction_reference, const std::vector&lt; <a class="el" href="structBlind.html">Blind</a> &gt; &amp;blinds)=0</td></tr>
+<tr class="separator:a0ece13ffd6258825feaaa884247ca6e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14ae6086fd6ccc2dc34714c2f976258a"><td class="memItemLeft" align="right" valign="top"><a id="a14ae6086fd6ccc2dc34714c2f976258a"></a>
 virtual bool&#160;</td><td class="memItemRight" valign="bottom"><b>redeem</b> (const std::vector&lt; <a class="el" href="structCoin.html">Coin</a> &gt; &amp;coins)=0</td></tr>
 <tr class="separator:a14ae6086fd6ccc2dc34714c2f976258a"><td class="memSeparator" colspan="2">&#160;</td></tr>

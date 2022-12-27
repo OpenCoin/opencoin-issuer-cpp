@@ -1,4 +1,5 @@
 <map id="Coin" name="Coin">
-<area shape="rect" id="node1" title=" " alt="" coords="35,95,86,121"/>
-<area shape="rect" id="node2" href="$structCoin_1_1Payload.html" title=" " alt="" coords="5,5,116,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="35,213,86,240"/>
+<area shape="rect" id="node2" href="$structCoin_1_1Payload.html" title=" " alt="" coords="5,124,116,151"/>
+<area shape="rect" id="node3" href="$structBigInt.html" title=" " alt="" coords="31,5,91,32"/>
 </map>
