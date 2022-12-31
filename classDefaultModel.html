@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>oc-mint: DefaultModel Class Reference</title>
+<title>oc-issuer: DefaultModel Class Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,8 +21,8 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">oc-mint
-   &#160;<span id="projectnumber">0.0.1</span>
+   <div id="projectname">oc-issuer
+   &#160;<span id="projectnumber">0.0.2</span>
    </div>
   </td>
  </tr>
@@ -90,32 +90,214 @@ Collaboration diagram for DefaultModel:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a3f3db55e24aada8f0f4828529a04ef0d"><td class="memItemLeft" align="right" valign="top"><a id="a3f3db55e24aada8f0f4828529a04ef0d"></a>
-tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getCDDC</b> (unsigned int cdd_serial) override</td></tr>
+<tr class="memitem:a3f3db55e24aada8f0f4828529a04ef0d"><td class="memItemLeft" align="right" valign="top">tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDefaultModel.html#a3f3db55e24aada8f0f4828529a04ef0d">getCDDC</a> (unsigned int cdd_serial) override</td></tr>
 <tr class="separator:a3f3db55e24aada8f0f4828529a04ef0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a879560588eadf03168fb720751044295"><td class="memItemLeft" align="right" valign="top"><a id="a879560588eadf03168fb720751044295"></a>
-tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getCurrentCDDC</b> () override</td></tr>
+<tr class="memitem:a879560588eadf03168fb720751044295"><td class="memItemLeft" align="right" valign="top">tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDefaultModel.html#a879560588eadf03168fb720751044295">getCurrentCDDC</a> () override</td></tr>
 <tr class="separator:a879560588eadf03168fb720751044295"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab937854d71992a912cc9e62bb2e2a10d"><td class="memItemLeft" align="right" valign="top"><a id="ab937854d71992a912cc9e62bb2e2a10d"></a>
-std::vector&lt; <a class="el" href="structBlindSignature.html">BlindSignature</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mint</b> (const std::string &amp;transaction_reference, const std::vector&lt; <a class="el" href="structBlind.html">Blind</a> &gt; &amp;blinds) override</td></tr>
+<tr class="memitem:ab937854d71992a912cc9e62bb2e2a10d"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structBlindSignature.html">BlindSignature</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDefaultModel.html#ab937854d71992a912cc9e62bb2e2a10d">mint</a> (const std::string &amp;transaction_reference, const std::vector&lt; <a class="el" href="structBlind.html">Blind</a> &gt; &amp;blinds) override</td></tr>
 <tr class="separator:ab937854d71992a912cc9e62bb2e2a10d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae3c0327f61ff3c52ebaf5e60fa6eabad"><td class="memItemLeft" align="right" valign="top"><a id="ae3c0327f61ff3c52ebaf5e60fa6eabad"></a>
-const std::vector&lt; <a class="el" href="structMintKeyCert.html">MintKeyCert</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getMKCs</b> (const std::vector&lt; unsigned int &gt; &amp;denominations, const std::vector&lt; <a class="el" href="structBigInt.html">BigInt</a> &gt; &amp;mint_key_ids) override</td></tr>
+<tr class="memitem:ae3c0327f61ff3c52ebaf5e60fa6eabad"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; <a class="el" href="structMintKeyCert.html">MintKeyCert</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDefaultModel.html#ae3c0327f61ff3c52ebaf5e60fa6eabad">getMKCs</a> (const std::vector&lt; unsigned int &gt; &amp;denominations, const std::vector&lt; <a class="el" href="structBigInt.html">BigInt</a> &gt; &amp;mint_key_ids) override</td></tr>
 <tr class="separator:ae3c0327f61ff3c52ebaf5e60fa6eabad"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a44f6411e2de1c99de5eb3b112657a4b3"><td class="memItemLeft" align="right" valign="top"><a id="a44f6411e2de1c99de5eb3b112657a4b3"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>redeem</b> (const std::vector&lt; <a class="el" href="structCoin.html">Coin</a> &gt; &amp;coins) override</td></tr>
+<tr class="memitem:a44f6411e2de1c99de5eb3b112657a4b3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classDefaultModel.html#a44f6411e2de1c99de5eb3b112657a4b3">redeem</a> (const std::vector&lt; <a class="el" href="structCoin.html">Coin</a> &gt; &amp;coins) override</td></tr>
 <tr class="separator:a44f6411e2de1c99de5eb3b112657a4b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
 <tr class="inherit_header pub_static_methods_classModel"><td colspan="2" onclick="javascript:toggleInherit('pub_static_methods_classModel')"><img src="closed.png" alt="-"/>&#160;Static Public Member Functions inherited from <a class="el" href="classModel.html">Model</a></td></tr>
-<tr class="memitem:a638b943a2de45e4faba934fbe6ae8055 inherit pub_static_methods_classModel"><td class="memItemLeft" align="right" valign="top"><a id="a638b943a2de45e4faba934fbe6ae8055"></a>
-static std::unique_ptr&lt; <a class="el" href="classModel.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getModel</b> (const std::string &amp;backend_name)</td></tr>
+<tr class="memitem:a638b943a2de45e4faba934fbe6ae8055 inherit pub_static_methods_classModel"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classModel.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a638b943a2de45e4faba934fbe6ae8055">getModel</a> (const std::string &amp;backend_name)</td></tr>
 <tr class="separator:a638b943a2de45e4faba934fbe6ae8055 inherit pub_static_methods_classModel"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>this is for now our sample model </p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="a3f3db55e24aada8f0f4828529a04ef0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f3db55e24aada8f0f4828529a04ef0d">&#9670;&nbsp;</a></span>getCDDC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tl::expected&lt;<a class="el" href="structCDDC.html">CDDC</a> *, bool&gt; DefaultModel::getCDDC </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>cdd_serial</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>return the CurrencyDocumentDescription certifikate for a specific serial version number of it. <a href="https://opencoin.org/0.4/schemata.html#cddc">see spec</a> </p><dl class="section return"><dt>Returns</dt><dd>returns a pointer to the <a class="el" href="structCDDC.html">CDDC</a> if successful, false otherwise </dd></dl>
+
+<p>Implements <a class="el" href="classModel.html#a694101d09f26963cb3b4059779604ed5">Model</a>.</p>
+
+</div>
+</div>
+<a id="a879560588eadf03168fb720751044295"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a879560588eadf03168fb720751044295">&#9670;&nbsp;</a></span>getCurrentCDDC()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tl::expected&lt;<a class="el" href="structCDDC.html">CDDC</a> *, bool&gt; DefaultModel::getCurrentCDDC </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>return the CurrencyDocumentDescription certifikate <a href="https://opencoin.org/0.4/schemata.html#cddc">see spec</a> </p><dl class="section return"><dt>Returns</dt><dd>returns a pointer to the <a class="el" href="structCDDC.html">CDDC</a> if successful, false otherwise </dd></dl>
+
+<p>Implements <a class="el" href="classModel.html#a2a6e8779505b4c9b2e61328a9e870981">Model</a>.</p>
+
+</div>
+</div>
+<a id="ae3c0327f61ff3c52ebaf5e60fa6eabad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3c0327f61ff3c52ebaf5e60fa6eabad">&#9670;&nbsp;</a></span>getMKCs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::vector&lt;<a class="el" href="structMintKeyCert.html">MintKeyCert</a>&gt; DefaultModel::getMKCs </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; unsigned int &gt; &amp;&#160;</td>
+          <td class="paramname"><em>denominations</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structBigInt.html">BigInt</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>mint_key_ids</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>return the <a class="el" href="structMintKey.html">MintKey</a> certificates for a given list of denominations and mint key ids</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">denominations</td><td></td></tr>
+    <tr><td class="paramname">mint_key_ids</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>mint key certificates for given denominations and mint_key_ids </dd></dl>
+
+<p>Implements <a class="el" href="classModel.html#aed0ea733af94f2d4e08c24b2fa4df56f">Model</a>.</p>
+
+</div>
+</div>
+<a id="ab937854d71992a912cc9e62bb2e2a10d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab937854d71992a912cc9e62bb2e2a10d">&#9670;&nbsp;</a></span>mint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;<a class="el" href="structBlindSignature.html">BlindSignature</a>&gt; DefaultModel::mint </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>transaction_reference</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structBlind.html">Blind</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>blinds</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>returns the vector of blind signatures for a given vector of blinds</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">transaction_reference</td><td>reference to a transaction (send from client) </td></tr>
+    <tr><td class="paramname">blinds</td><td>the vector of blinds to sign</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd></dd></dl>
+
+<p>Implements <a class="el" href="classModel.html#a0ece13ffd6258825feaaa884247ca6e2">Model</a>.</p>
+
+</div>
+</div>
+<a id="a44f6411e2de1c99de5eb3b112657a4b3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a44f6411e2de1c99de5eb3b112657a4b3">&#9670;&nbsp;</a></span>redeem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool DefaultModel::redeem </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="structCoin.html">Coin</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>coins</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>redeem valid coins into real money</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">coins</td><td>the coins to redeem</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if successful, false on error </dd></dl>
+
+<p>Implements <a class="el" href="classModel.html#a14ae6086fd6ccc2dc34714c2f976258a">Model</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>src/model.cpp</li>
 </ul>
 </div><!-- contents -->

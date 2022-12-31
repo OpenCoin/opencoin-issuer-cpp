@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>oc-mint: Main Page</title>
+<title>oc-issuer: opencoin-issuer-cpp - a C++ OpenCoin Issuer REST-API implementation</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -21,8 +21,8 @@
  <tbody>
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
-   <div id="projectname">oc-mint
-   &#160;<span id="projectnumber">0.0.1</span>
+   <div id="projectname">oc-issuer
+   &#160;<span id="projectnumber">0.0.2</span>
    </div>
   </td>
  </tr>
@@ -61,11 +61,62 @@ $(function() {
 </iframe>
 </div>
 
-<div class="header">
+<div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">oc-mint Documentation</div>  </div>
+<div class="title">opencoin-issuer-cpp - a C++ OpenCoin Issuer REST-API implementation </div>  </div>
 </div><!--header-->
 <div class="contents">
+<div class="textblock"><p><a class="anchor" id="mainpage"></a></p>
+<p><img src="https://github.com/OpenCoin/opencoin-issuer-cpp/actions/workflows/cmake.yaml/badge.svg" alt="build" style="pointer-events: none;" class="inline"/> <a href="https://github.com/OpenCoin/opencoin-issuer-cpp/actions/workflows/doxygen-gh-pages.yml"><img src="https://github.com/OpenCoin/opencoin-issuer-cpp/actions/workflows/doxygen-gh-pages.yml/badge.svg" alt="Documentation" style="pointer-events: none;" class="inline"/></a></p>
+<h1><a class="anchor" id="autotoc_md0"></a>
+opencoin issuer</h1>
+<p>this is a C++ implementation of the <a href="https://opencoin.org/0.4/OpenCoin.html">opencoin protocol</a> done as mapping to some kind of REST interface.</p>
+<p>As all issuer related interactions of the protocol follows a request/response mechanism we are able to map all of them to Http-Requests.</p>
+<p>We decided to use POST-Requests in all cases, as the protocol uses JSON-formatted messages for requests.</p>
+<p>The following table gives an overview of the mapping of requests to URLs:</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadLeft">Request   </th><th class="markdownTableHeadLeft">URL   </th><th class="markdownTableHeadLeft"><a class="el" href="structResponse.html">Response</a>   </th><th class="markdownTableHeadLeft">C++ Interface Method    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><a class="el" href="structRequestCDDCSerial.html">RequestCDDCSerial</a>   </td><td class="markdownTableBodyLeft">/cddc/serial   </td><td class="markdownTableBodyLeft"><a class="el" href="structResponseCDDCSerial.html">ResponseCDDCSerial</a>   </td><td class="markdownTableBodyLeft">cdd.cdd_serial of <a class="el" href="classModel.html#a2a6e8779505b4c9b2e61328a9e870981">Model::getCurrentCDDC()</a>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><a class="el" href="structRequestCDDC.html">RequestCDDC</a>   </td><td class="markdownTableBodyLeft">/cddc   </td><td class="markdownTableBodyLeft"><a class="el" href="structResponseCDDC.html">ResponseCDDC</a>   </td><td class="markdownTableBodyLeft"><a class="el" href="classModel.html#a2a6e8779505b4c9b2e61328a9e870981">Model::getCurrentCDDC()</a>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><a class="el" href="structRequestMKCs.html">RequestMKCs</a>   </td><td class="markdownTableBodyLeft">/mkcs   </td><td class="markdownTableBodyLeft"><a class="el" href="structResponseMKCs.html">ResponseMKCs</a>   </td><td class="markdownTableBodyLeft"><a class="el" href="classModel.html#aed0ea733af94f2d4e08c24b2fa4df56f">Model::getMKCs</a>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><a class="el" href="structRequestMint.html">RequestMint</a>   </td><td class="markdownTableBodyLeft">/mint   </td><td class="markdownTableBodyLeft"><a class="el" href="structResponseMint.html">ResponseMint</a>   </td><td class="markdownTableBodyLeft"><a class="el" href="classModel.html#a0ece13ffd6258825feaaa884247ca6e2">Model::mint</a>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><a class="el" href="structRequestRenew.html">RequestRenew</a>   </td><td class="markdownTableBodyLeft">/renew   </td><td class="markdownTableBodyLeft"><a class="el" href="structResponseMint.html">ResponseMint</a> or <a class="el" href="structResponseDelay.html">ResponseDelay</a>   </td><td class="markdownTableBodyLeft">?    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyLeft"><a class="el" href="structRequestResume.html">RequestResume</a>   </td><td class="markdownTableBodyLeft">/resume   </td><td class="markdownTableBodyLeft"><a class="el" href="structResponseMint.html">ResponseMint</a> or <a class="el" href="structResponseDelay.html">ResponseDelay</a>   </td><td class="markdownTableBodyLeft">?    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyLeft"><a class="el" href="structRequestRedeem.html">RequestRedeem</a>   </td><td class="markdownTableBodyLeft">/redeem   </td><td class="markdownTableBodyLeft"><a class="el" href="structResponseRedeem.html">ResponseRedeem</a>   </td><td class="markdownTableBodyLeft"><a class="el" href="classModel.html#a14ae6086fd6ccc2dc34714c2f976258a">Model::redeem</a>   </td></tr>
+</table>
+<p>actually the implementation is a work in progress.</p>
+<h2><a class="anchor" id="autotoc_md1"></a>
+TODO</h2>
+<ul>
+<li>[ ] select crypto library<ul>
+<li><a href="https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries">https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries</a></li>
+</ul>
+</li>
+<li>[ ] blinding utilizing crypto++</li>
+<li>[ ] integrate session and login to make transactions account based</li>
+<li>[ ] bookkeeping for accounts</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md2"></a>
+Protocol Questions</h2>
+<ul>
+<li>What is signed as cdd - only the content of the cdd item with curly braces or also the key?</li>
+<li>the weighted URL as array has a different js encoding as other elements</li>
+<li>Clarify PSS usage (see <a href="https://crypto.stackexchange.com/questions/12707/usability-of-padding-scheme-in-blinded-rsa-signature">https://crypto.stackexchange.com/questions/12707/usability-of-padding-scheme-in-blinded-rsa-signature</a>)</li>
+</ul>
+<h3><a class="anchor" id="autotoc_md3"></a>
+Blinding Notes</h3>
+<p><a href="https://stackoverflow.com/questions/47860570/how-to-create-and-verify-blind-rsa-signatures-with-crypto">https://stackoverflow.com/questions/47860570/how-to-create-and-verify-blind-rsa-signatures-with-crypto</a></p>
+<p><a href="https://crypto.stackexchange.com/questions/12707/usability-of-padding-scheme-in-blinded-rsa-signature">https://crypto.stackexchange.com/questions/12707/usability-of-padding-scheme-in-blinded-rsa-signature</a></p>
+<p><a href="https://crypto.stackexchange.com/questions/54085/is-there-a-standard-padding-format-for-rsa-blind-signatures/60728#60728">https://crypto.stackexchange.com/questions/54085/is-there-a-standard-padding-format-for-rsa-blind-signatures/60728#60728</a> <a href="https://crypto.stackexchange.com/questions/5626/rsa-blind-signatures-in-practice">https://crypto.stackexchange.com/questions/5626/rsa-blind-signatures-in-practice</a> </p>
+</div></div><!-- PageDoc -->
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

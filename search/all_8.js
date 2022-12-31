@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['weightedurl_31',['WeightedUrl',['../structWeightedUrl.html',1,'']]]
+  ['payload_30',['Payload',['../structCoin_1_1Payload.html',1,'Coin']]],
+  ['publickey_31',['PublicKey',['../structPublicKey.html',1,'']]]
 ];

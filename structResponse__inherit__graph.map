@@ -1,9 +1,9 @@
 <map id="Response" name="Response">
-<area shape="rect" id="node1" title=" " alt="" coords="420,5,505,32"/>
-<area shape="rect" id="node2" href="$structResponseCDDC.html" title=" " alt="" coords="5,80,128,107"/>
-<area shape="rect" id="node3" href="$structResponseCDDSerial.html" title=" " alt="" coords="153,80,303,107"/>
-<area shape="rect" id="node4" href="$structResponseDelay.html" title=" " alt="" coords="328,80,451,107"/>
-<area shape="rect" id="node5" href="$structResponseMKCs.html" title=" " alt="" coords="475,80,597,107"/>
-<area shape="rect" id="node6" href="$structResponseMint.html" title=" " alt="" coords="621,80,736,107"/>
-<area shape="rect" id="node7" href="$structResponseRedeem.html" title=" " alt="" coords="760,80,899,107"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,132,91,159"/>
+<area shape="rect" id="node2" href="$structResponseCDDC.html" title=" " alt="" coords="157,5,280,32"/>
+<area shape="rect" id="node3" href="$structResponseCDDCSerial.html" title=" " alt="" coords="139,56,299,83"/>
+<area shape="rect" id="node4" href="$structResponseDelay.html" title=" " alt="" coords="157,107,280,133"/>
+<area shape="rect" id="node5" href="$structResponseMKCs.html" title=" " alt="" coords="158,157,279,184"/>
+<area shape="rect" id="node6" href="$structResponseMint.html" title=" " alt="" coords="161,208,276,235"/>
+<area shape="rect" id="node7" href="$structResponseRedeem.html" title=" " alt="" coords="149,259,288,285"/>
 </map>

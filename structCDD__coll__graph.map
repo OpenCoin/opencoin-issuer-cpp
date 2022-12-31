@@ -1,5 +1,5 @@
 <map id="CDD" name="CDD">
-<area shape="rect" id="node1" title=" " alt="" coords="21,199,71,225"/>
+<area shape="rect" id="node1" title="currency description document" alt="" coords="21,199,71,225"/>
 <area shape="rect" id="node2" href="$structPublicKey.html" title=" " alt="" coords="55,109,141,136"/>
 <area shape="rect" id="node3" href="$structBigInt.html" title=" " alt="" coords="5,5,65,32"/>
 </map>
