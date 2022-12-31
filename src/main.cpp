@@ -29,11 +29,11 @@ int main() {
 
   CROW_ROUTE(app, "/cddc/serial")
       .methods(crow::HTTPMethod::POST)([&model](const crow::request &request) {
-        auto req = RequestCDDSerial::from_string(request.body);
+        auto req = RequestCDDCSerial::from_string(request.body);
         if (!req) {
           return crow::response(crow::status::BAD_REQUEST);
         } else {
-          ResponseCDDSerial res;
+          ResponseCDDCSerial res;
           res.message_reference = req->message_reference;
 
           auto cddc = model->getCurrentCDDC();

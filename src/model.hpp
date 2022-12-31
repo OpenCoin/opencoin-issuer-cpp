@@ -100,14 +100,14 @@ struct Response {
   virtual crow::json::wvalue to_json() const;
 };
 
-struct RequestCDDSerial {
+struct RequestCDDCSerial {
   unsigned int message_reference; /// Client internal message reference.
                                   /// (Integer)
-  static tl::expected<RequestCDDSerial, eError>
+  static tl::expected<RequestCDDCSerial, eError>
   from_string(const std::string &str);
 };
 
-struct ResponseCDDSerial : Response {
+struct ResponseCDDCSerial : Response {
   unsigned int cdd_serial;
 
   crow::json::wvalue to_json() const override;
