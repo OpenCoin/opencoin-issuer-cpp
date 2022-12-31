@@ -15,32 +15,32 @@ TEST_CASE( "PublicKey::to_json", "[to_json]" ) {
   REQUIRE( json.keys().size() == 3 );
 }
 
-TEST_CASE("RequestCDDSerial::from_string", "[from_string]") {
+TEST_CASE("RequestCDDCSerial::from_string", "[from_string]") {
   // good case
   std::string good = "{"
                      "\"message_reference\": 100000,"
                      "\"type\": \"request cdd serial\""
                      "}";
 
-  auto res = RequestCDDSerial::from_string(good);
+  auto res = RequestCDDCSerial::from_string(good);
   REQUIRE(res.has_value() == true);
   REQUIRE(res->message_reference == 100000);
 
   // bad cases
-  res = RequestCDDSerial::from_string("");
+  res = RequestCDDCSerial::from_string("");
   REQUIRE(res.has_value() == false);
 
   // invalid type
-  res = RequestCDDSerial::from_string("{"
-                                      "\"message_reference\": 100000,"
-                                      "\"type\": \"request something wrong\""
-                                      "}");
+  res = RequestCDDCSerial::from_string("{"
+                                       "\"message_reference\": 100000,"
+                                       "\"type\": \"request something wrong\""
+                                       "}");
   REQUIRE(res.has_value() == false);
 
   // invalid attribute name
-  res = RequestCDDSerial::from_string("{"
-                                      "\"x_message_reference\": 100000,"
-                                      "}");
+  res = RequestCDDCSerial::from_string("{"
+                                       "\"x_message_reference\": 100000,"
+                                       "}");
   REQUIRE(res.has_value() == false);
 }
 

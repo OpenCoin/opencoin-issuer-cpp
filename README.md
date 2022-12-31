@@ -16,8 +16,13 @@ or also the key?
 
 ## TODO
 
-+ [ ] bigint type for big integers encoded as string
++ [x] bigint type for big integers encoded as string
 + [ ] blinding utilizing crypto++
+- [x] complete from_json conversions
+- [x] complete tests
+- [x] drone config
+- [ ] select crypto library
+   + https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries
 
 ### Blinding Notes
 

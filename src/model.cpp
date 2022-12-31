@@ -104,7 +104,7 @@ crow::json::wvalue Response::to_json() const {
   return r;
 }
 
-crow::json::wvalue ResponseCDDSerial::to_json() const {
+crow::json::wvalue ResponseCDDCSerial::to_json() const {
   crow::json::wvalue r = Response::to_json();
   TO_JSON(cdd_serial);
 
@@ -112,8 +112,8 @@ crow::json::wvalue ResponseCDDSerial::to_json() const {
   return r;
 }
 
-tl::expected<RequestCDDSerial, eError>
-RequestCDDSerial::from_string(const std::string &str) {
+tl::expected<RequestCDDCSerial, eError>
+RequestCDDCSerial::from_string(const std::string &str) {
   auto json = crow::json::load(str);
   if (!json) {
     return tl::make_unexpected(eError::JSON_PARSE_ERROR);
@@ -122,7 +122,7 @@ RequestCDDSerial::from_string(const std::string &str) {
   } else if (json["type"] != "request cdd serial") {
     return tl::make_unexpected(eError::JSON_ERROR);
   } else {
-    RequestCDDSerial r;
+    RequestCDDCSerial r;
     r.message_reference = json["message_reference"].u();
     return r;
   }
