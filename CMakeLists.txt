@@ -14,7 +14,7 @@ else()
     add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
-project(oc-mint VERSION 0.0.1 LANGUAGES CXX)
+project(oc-issuer VERSION 0.0.2 LANGUAGES CXX)
 
 include(FetchContent)
 
@@ -64,10 +64,10 @@ find_package(Doxygen
              REQUIRED dot
              OPTIONAL_COMPONENTS mscgen dia)
 set(DOXYGEN_HAVE_DOT YES)
-doxygen_add_docs(
-    doc
-    src
-    COMMENT "Generate documentation"
+doxygen_add_docs( doc
+                  README.md 
+                  src
+		  COMMENT "Generate documentation"
 )
 
 # build common library
@@ -76,8 +76,8 @@ add_library(oc-mint-lib ${LIB_SOURCES})
 target_link_libraries(oc-mint-lib PUBLIC Crow::Crow)
 target_include_directories(oc-mint-lib PUBLIC ${expected_SOURCE_DIR}/include src) 
 
-add_executable(oc-mint src/main.cpp)
-target_link_libraries(oc-mint PRIVATE oc-mint-lib INTERFACE tl::expected::expected)
+add_executable(${PROJECT_NAME} src/main.cpp)
+target_link_libraries(${PROJECT_NAME} PRIVATE oc-mint-lib INTERFACE tl::expected::expected)
 
 ## these are unittests that can be run on any platform
 add_executable(tests  test/test_big_int.cpp test/test.cpp)

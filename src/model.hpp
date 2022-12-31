@@ -25,30 +25,36 @@ struct WeightedUrl {
   crow::json::wvalue to_json() const;
 };
 
-/** currency description document */
+/** @brief currency description document 
+ *
+ * this structure describes a currency based on opencoin protocol. 
+ * It can be converted to json to provide the specified currency 
+ * description document. 
+ */
 struct CDD {
 
   std::string additional_info;
-  time_t cdd_expiry_date;//: 2023-07-22T15:45:53.164685
-  std::string  cdd_location;//: https://opencent.org,
-  size_t cdd_serial;//: 1,
-  time_t  cdd_signing_date;//: 2022-07-22T15:45:53.164685,
-  size_t  currency_divisor;//: 100,
-  std::string  currency_name;//: OpenCent,
-  std::vector<unsigned>  denominations;//: [1, 2, 5],
-  BigInt id;//: 23ed956e629ba35f0002eaf833ea436aea7db5c2,
+  time_t cdd_expiry_date;    /// expiry date of this document (e.g.
+                             ///2023-07-22T15:45:53.164685)
+  std::string cdd_location;  /// URL of location of this document (e.g
+                             ///https://opencent.org)
+  size_t cdd_serial;         /// serial number of currency description document
+  time_t cdd_signing_date;   /// date of signing this document (e.g.
+                             ///2022-07-22T15:45:53.164685)
+  size_t currency_divisor;   /// divisor used for coins of this currency
+  std::string currency_name; /// name of the currency (e.g. OpenCent)
+  std::vector<unsigned>
+      denominations; /// the available denominations of this currency
+  BigInt id;         /// an identity for this currency
 
-std::vector<WeightedUrl> info_service;
-  /* eCipherSuite*/ std::string issuer_cipher_suite; //: RSA-SHA256-PSS-CHAUM82,
-  PublicKey
-      issuer_public_master_key; //: {
-                                //  modulus:
-                                //  daaa63ddda38c189b8c49020c8276adbe0a695685a...,
-                                // public_exponent: 65537,
-                                // type: rsa public key
-  //},
+  std::vector<WeightedUrl> info_service;
+  /* eCipherSuite*/
+  std::string issuer_cipher_suite; /// the cipher suite used for this currencey
+                                   /// (currently only RSA-SHA256-PSS-CHAUM82 
+                                   ///  is supported)
+  PublicKey issuer_public_master_key; /// the public key of this currency
   std::vector<WeightedUrl> mint_service;
-  std::string protocol_version; //: https://opencoin.org/1.0,
+  std::string protocol_version; // e.g. https://opencoin.org/1.0
   std::vector<WeightedUrl> redeem_service;
   std::vector<WeightedUrl> renew_service;
 
@@ -237,18 +243,63 @@ class Model {
 public:
   virtual ~Model(){};
 
+  /** 
+   * return the CurrencyDocumentDescription certifikate for a specific 
+   * serial version number of it.
+   * [see spec](https://opencoin.org/0.4/schemata.html#cddc)
+   * @return returns a pointer to the CDDC if successful, false otherwise
+   */
   virtual tl::expected<CDDC *, bool> getCDDC(unsigned int cdd_serial) = 0;
-  virtual tl::expected<CDDC *, bool> getCurrentCDDC() = 0;
 
+  /** 
+   * return the CurrencyDocumentDescription certifikate 
+   * [see spec](https://opencoin.org/0.4/schemata.html#cddc)
+   * @return returns a pointer to the CDDC if successful, false otherwise
+   */virtual tl::expected<CDDC *, bool> getCurrentCDDC() = 0;
+
+  /** 
+   * return the MintKey certificates for a given list of denominations 
+   * and mint key ids
+   *
+   * @param denominations 
+   * @param mint_key_ids 
+   *
+   * @return mint key certificates for given denominations and mint_key_ids
+   */
   virtual const std::vector<MintKeyCert>
   getMKCs(const std::vector<unsigned int> &denominations,
           const std::vector<BigInt> &mint_key_ids) = 0;
 
+
+  /** 
+   * returns the vector of blind signatures for a given vector of blinds
+   *
+   * @param transaction_reference reference to a transaction (send from client)
+   * @param blinds the vector of blinds to sign
+   *
+   * @return 
+   */
   virtual std::vector<BlindSignature>
   mint(std::string const& transaction_reference,
        const std::vector<Blind> &blinds) = 0;
+
+  /** 
+   * redeem valid coins into real money
+   *
+   * @param coins the coins to redeem
+   *
+   * @return true if successful, false on error
+   */
   virtual bool redeem(const std::vector<Coin> &coins) = 0;
 
+  /** 
+   * factory function returning a concrete backend for Opencoin API handling.
+   * based on backend_name a concrete backend will be returned 
+   * or in case of error null.
+   * @param backend_name 
+   *
+   * @return pointer to backend instance or null on invalid backend name
+   */
   static std::unique_ptr<Model> getModel(const std::string &backend_name);
 
 private:
