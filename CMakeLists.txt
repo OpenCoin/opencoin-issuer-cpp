@@ -71,7 +71,11 @@ doxygen_add_docs( doc
 )
 
 # build common library
-set(LIB_SOURCES src/model.cpp src/model.hpp src/big_int.hpp src/big_int.cpp)
+set(LIB_SOURCES
+  src/model.cpp src/model.hpp
+  src/json_serialisation.cpp
+  src/big_int.hpp src/big_int.cpp )
+
 add_library(oc-mint-lib ${LIB_SOURCES})
 target_link_libraries(oc-mint-lib PUBLIC Crow::Crow)
 target_include_directories(oc-mint-lib PUBLIC ${expected_SOURCE_DIR}/include src) 
