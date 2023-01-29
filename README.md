@@ -6,7 +6,7 @@ opencoin-issuer-cpp - a C++ OpenCoin Issuer REST-API implementation {#mainpage}
 
 # opencoin issuer
 
-this is a C++ implementation of the [opencoin protocol](https://opencoin.org/0.4/OpenCoin.html)
+this is a C++ implementation of the [opencoin protocol](https://opencoin.org/OpenCoin.html)
 done as mapping to some kind of REST interface.
 
 As all issuer related interactions of the protocol follows a request/response mechanism we are able to map all of them to Http-Requests.
