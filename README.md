@@ -51,3 +51,8 @@ https://crypto.stackexchange.com/questions/12707/usability-of-padding-scheme-in-
 
 https://crypto.stackexchange.com/questions/54085/is-there-a-standard-padding-format-for-rsa-blind-signatures/60728#60728
 https://crypto.stackexchange.com/questions/5626/rsa-blind-signatures-in-practice
+
+<https://cfrg.github.io/draft-irtf-cfrg-blind-signatures/draft-irtf-cfrg-rsa-blind-signatures.html>
+
+alternative implementation using openssl
+https://github.com/jedisct1/blind-rsa-signatures
