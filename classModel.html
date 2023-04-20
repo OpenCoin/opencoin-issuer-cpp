@@ -82,12 +82,12 @@ Inheritance diagram for Model:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a694101d09f26963cb3b4059779604ed5"><td class="memItemLeft" align="right" valign="top">virtual tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a694101d09f26963cb3b4059779604ed5">getCDDC</a> (unsigned int cdd_serial)=0</td></tr>
-<tr class="separator:a694101d09f26963cb3b4059779604ed5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2a6e8779505b4c9b2e61328a9e870981"><td class="memItemLeft" align="right" valign="top">virtual tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a2a6e8779505b4c9b2e61328a9e870981">getCurrentCDDC</a> ()=0</td></tr>
-<tr class="separator:a2a6e8779505b4c9b2e61328a9e870981"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed0ea733af94f2d4e08c24b2fa4df56f"><td class="memItemLeft" align="right" valign="top">virtual const std::vector&lt; <a class="el" href="structMintKeyCert.html">MintKeyCert</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#aed0ea733af94f2d4e08c24b2fa4df56f">getMKCs</a> (const std::vector&lt; unsigned int &gt; &amp;denominations, const std::vector&lt; <a class="el" href="structBigInt.html">BigInt</a> &gt; &amp;mint_key_ids)=0</td></tr>
-<tr class="separator:aed0ea733af94f2d4e08c24b2fa4df56f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4e5cca587cec5d56c955a797cc4295f"><td class="memItemLeft" align="right" valign="top">virtual tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#af4e5cca587cec5d56c955a797cc4295f">get_cddc</a> (unsigned int cdd_serial)=0</td></tr>
+<tr class="separator:af4e5cca587cec5d56c955a797cc4295f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a50d7fc134c43bc28045a7993ff2f2ca5"><td class="memItemLeft" align="right" valign="top">virtual tl::expected&lt; <a class="el" href="structCDDC.html">CDDC</a> *, bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a50d7fc134c43bc28045a7993ff2f2ca5">get_current_cddc</a> ()=0</td></tr>
+<tr class="separator:a50d7fc134c43bc28045a7993ff2f2ca5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a022e8d797bf57d111a1ce5bd229f41ea"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="structMintKeyCert.html">MintKeyCert</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a022e8d797bf57d111a1ce5bd229f41ea">getMKCs</a> (const std::vector&lt; unsigned int &gt; &amp;denominations, const std::vector&lt; <a class="el" href="structBigInt.html">BigInt</a> &gt; &amp;mint_key_ids)=0</td></tr>
+<tr class="separator:a022e8d797bf57d111a1ce5bd229f41ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0ece13ffd6258825feaaa884247ca6e2"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="structBlindSignature.html">BlindSignature</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a0ece13ffd6258825feaaa884247ca6e2">mint</a> (std::string const &amp;transaction_reference, const std::vector&lt; <a class="el" href="structBlind.html">Blind</a> &gt; &amp;blinds)=0</td></tr>
 <tr class="separator:a0ece13ffd6258825feaaa884247ca6e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a14ae6086fd6ccc2dc34714c2f976258a"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a14ae6086fd6ccc2dc34714c2f976258a">redeem</a> (const std::vector&lt; <a class="el" href="structCoin.html">Coin</a> &gt; &amp;coins)=0</td></tr>
@@ -95,12 +95,12 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a638b943a2de45e4faba934fbe6ae8055"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classModel.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a638b943a2de45e4faba934fbe6ae8055">getModel</a> (const std::string &amp;backend_name)</td></tr>
-<tr class="separator:a638b943a2de45e4faba934fbe6ae8055"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0f33afb8d901d61f93ed7d6f7560403a"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classModel.html">Model</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classModel.html#a0f33afb8d901d61f93ed7d6f7560403a">get_model</a> (const std::string &amp;backend_name)</td></tr>
+<tr class="separator:a0f33afb8d901d61f93ed7d6f7560403a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a694101d09f26963cb3b4059779604ed5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a694101d09f26963cb3b4059779604ed5">&#9670;&nbsp;</a></span>getCDDC()</h2>
+<a id="af4e5cca587cec5d56c955a797cc4295f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4e5cca587cec5d56c955a797cc4295f">&#9670;&nbsp;</a></span>get_cddc()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -109,7 +109,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual tl::expected&lt;<a class="el" href="structCDDC.html">CDDC</a> *, bool&gt; Model::getCDDC </td>
+          <td class="memname">virtual tl::expected&lt;<a class="el" href="structCDDC.html">CDDC</a> *, bool&gt; Model::get_cddc </td>
           <td>(</td>
           <td class="paramtype">unsigned int&#160;</td>
           <td class="paramname"><em>cdd_serial</em></td><td>)</td>
@@ -124,12 +124,12 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>return the CurrencyDocumentDescription certifikate for a specific serial version number of it. <a href="https://opencoin.org/0.4/schemata.html#cddc">see spec</a> </p><dl class="section return"><dt>Returns</dt><dd>returns a pointer to the <a class="el" href="structCDDC.html">CDDC</a> if successful, false otherwise </dd></dl>
 
-<p>Implemented in <a class="el" href="classDefaultModel.html#a3f3db55e24aada8f0f4828529a04ef0d">DefaultModel</a>.</p>
+<p>Implemented in <a class="el" href="classDefaultModel.html#a5d57be9ead842ec3385144f7caa9524e">DefaultModel</a>.</p>
 
 </div>
 </div>
-<a id="a2a6e8779505b4c9b2e61328a9e870981"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2a6e8779505b4c9b2e61328a9e870981">&#9670;&nbsp;</a></span>getCurrentCDDC()</h2>
+<a id="a50d7fc134c43bc28045a7993ff2f2ca5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a50d7fc134c43bc28045a7993ff2f2ca5">&#9670;&nbsp;</a></span>get_current_cddc()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -138,7 +138,7 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual tl::expected&lt;<a class="el" href="structCDDC.html">CDDC</a> *, bool&gt; Model::getCurrentCDDC </td>
+          <td class="memname">virtual tl::expected&lt;<a class="el" href="structCDDC.html">CDDC</a> *, bool&gt; Model::get_current_cddc </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -152,12 +152,12 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>return the CurrencyDocumentDescription certifikate <a href="https://opencoin.org/0.4/schemata.html#cddc">see spec</a> </p><dl class="section return"><dt>Returns</dt><dd>returns a pointer to the <a class="el" href="structCDDC.html">CDDC</a> if successful, false otherwise </dd></dl>
 
-<p>Implemented in <a class="el" href="classDefaultModel.html#a879560588eadf03168fb720751044295">DefaultModel</a>.</p>
+<p>Implemented in <a class="el" href="classDefaultModel.html#a24f870ad579abc50dc3140dc68fa89fa">DefaultModel</a>.</p>
 
 </div>
 </div>
-<a id="aed0ea733af94f2d4e08c24b2fa4df56f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed0ea733af94f2d4e08c24b2fa4df56f">&#9670;&nbsp;</a></span>getMKCs()</h2>
+<a id="a0f33afb8d901d61f93ed7d6f7560403a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0f33afb8d901d61f93ed7d6f7560403a">&#9670;&nbsp;</a></span>get_model()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -166,7 +166,40 @@ Static Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual const std::vector&lt;<a class="el" href="structMintKeyCert.html">MintKeyCert</a>&gt; Model::getMKCs </td>
+          <td class="memname">std::unique_ptr&lt; <a class="el" href="classModel.html">Model</a> &gt; Model::get_model </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>backend_name</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>factory function returning a concrete backend for Opencoin API handling. based on backend_name a concrete backend will be returned or in case of error null. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">backend_name</td><td></td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>pointer to backend instance or null on invalid backend name </dd></dl>
+
+</div>
+</div>
+<a id="a022e8d797bf57d111a1ce5bd229f41ea"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a022e8d797bf57d111a1ce5bd229f41ea">&#9670;&nbsp;</a></span>getMKCs()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::vector&lt;<a class="el" href="structMintKeyCert.html">MintKeyCert</a>&gt; Model::getMKCs </td>
           <td>(</td>
           <td class="paramtype">const std::vector&lt; unsigned int &gt; &amp;&#160;</td>
           <td class="paramname"><em>denominations</em>, </td>
@@ -198,39 +231,6 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>mint key certificates for given denominations and mint_key_ids </dd></dl>
-
-</div>
-</div>
-<a id="a638b943a2de45e4faba934fbe6ae8055"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a638b943a2de45e4faba934fbe6ae8055">&#9670;&nbsp;</a></span>getModel()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::unique_ptr&lt; <a class="el" href="classModel.html">Model</a> &gt; Model::getModel </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>backend_name</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>factory function returning a concrete backend for Opencoin API handling. based on backend_name a concrete backend will be returned or in case of error null. </p><dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">backend_name</td><td></td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>pointer to backend instance or null on invalid backend name </dd></dl>
 
 </div>
 </div>
