@@ -10,16 +10,18 @@
 template <class T>
 crow::json::wvalue list_to_json(const std::vector<T> &array) {
   crow::json::wvalue::list l;
-  for (auto item : array)
+  for (const auto& item : array) {
     l.push_back(item.to_json());
-  return crow::json::wvalue(l);
+  }
+  return {l};
 }
 
 crow::json::wvalue list_to_json(const std::vector<unsigned int> &array) {
   crow::json::wvalue::list l;
-  for (auto item : array)
-    l.push_back(item);
-  return crow::json::wvalue(l);
+  for (auto item : array) {
+    l.emplace_back(item);
+  }
+    return {l};
 }
 
 crow::json::wvalue PublicKey::to_json() const {
@@ -35,7 +37,7 @@ crow::json::wvalue WeightedUrl::to_json() const {
   crow::json::wvalue w(weight);
 
   l.push_back(w);
-  l.push_back(url);
+  l.emplace_back(url);
   return l;
 }
 
@@ -171,7 +173,7 @@ RequestMKCs::from_string(const std::string &str) {
     if (denominations.t() != crow::json::type::List) {
       return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
     } else {
-      for (auto d : denominations.lo()) {
+      for (const auto& d : denominations.lo()) {
         r.denominations.push_back(d.u());
       }
     }
@@ -179,7 +181,7 @@ RequestMKCs::from_string(const std::string &str) {
     if (mint_key_ids.t() != crow::json::type::List) {
       return tl::make_unexpected(eError::JSON_WRONG_REQUEST_TYPE);
     } else {
-      for (auto k: mint_key_ids.lo()) {
+      for (const auto& k: mint_key_ids.lo()) {
 	auto kv = BigInt::from_string(k.s());
 	if (!kv.has_value()) {
 	  return tl::make_unexpected(eError::JSON_PARSE_ERROR);
@@ -269,7 +271,7 @@ RequestMint::from_string(const std::string &str) {
       return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
     }
 
-    for (auto item : json["blinds"]) {
+    for (const auto& item : json["blinds"]) {
       auto b = Blind::from_json(item);
       if (!b.has_value()) {
         return tl::make_unexpected(b.error());
@@ -384,7 +386,7 @@ RequestRenew::from_string(const std::string &str) {
   } else {
     RequestRenew r;
 
-    for (auto item : json["coins"]) {
+    for (const auto& item : json["coins"]) {
       auto coin = Coin::from_json(item);
       if (!coin.has_value()) {
         return tl::make_unexpected(coin.error());
@@ -393,7 +395,7 @@ RequestRenew::from_string(const std::string &str) {
       }
     }
 
-    for (auto item : json["blinds"]) {
+    for (const auto& item : json["blinds"]) {
       auto blind = Blind::from_json(item);
       if (!blind.has_value()) {
         return tl::make_unexpected(blind.error());
@@ -453,7 +455,7 @@ RequestRedeem::from_string(const std::string &str) {
       return tl::make_unexpected(eError::JSON_WRONG_VALUE_TYPE);
     }
 
-    for (auto item : json["coins"]) {
+    for (const auto& item : json["coins"]) {
       auto coin = Coin::from_json(item);
       if (!coin.has_value()) {
         return tl::make_unexpected(coin.error());

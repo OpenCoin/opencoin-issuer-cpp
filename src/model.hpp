@@ -1,5 +1,5 @@
-#ifndef MODEL_HPP
-#define MODEL_HPP
+#ifndef OC_ISSUER_MODEL_HPP
+#define OC_ISSUER_MODEL_HPP
 
 #include <chrono>
 #include <memory>
@@ -15,14 +15,14 @@ struct PublicKey {
   BigInt modulus; //: "daaa63ddda38c189b8c49020c8276adbe0a695685a...",
   BigInt public_exponent;//: 65537,
 
-  crow::json::wvalue to_json() const;
+    [[nodiscard]] crow::json::wvalue to_json() const;
 };
 
 struct WeightedUrl {
   uint32_t weight;
   std::string url;
 
-  crow::json::wvalue to_json() const;
+    [[nodiscard]] crow::json::wvalue to_json() const;
 };
 
 /** @brief currency description document 
@@ -58,14 +58,14 @@ struct CDD {
   std::vector<WeightedUrl> redeem_service;
   std::vector<WeightedUrl> renew_service;
 
-  crow::json::wvalue to_json() const;
+  [[nodiscard]] crow::json::wvalue to_json() const;
 };
 
 struct CDDC {
   CDD cdd;
   std::string signature;
 
-  crow::json::wvalue to_json() const;
+    [[nodiscard]] crow::json::wvalue to_json() const;
 };
 
 struct MintKey {
@@ -79,14 +79,14 @@ struct MintKey {
   std::string sign_coins_not_after;
   std::string sign_coins_not_before;
   //    "type": "mint key"
-  crow::json::wvalue to_json() const;
+  [[nodiscard]] crow::json::wvalue to_json() const;
 };
 
 struct MintKeyCert {
   MintKey mint_key;
   std::string signature;
 
-  crow::json::wvalue to_json() const;
+    [[nodiscard]] crow::json::wvalue to_json() const;
 };
 
 enum class eError {
@@ -103,7 +103,7 @@ struct Response {
   unsigned int status_code;
   std::string status_description;
 
-  virtual crow::json::wvalue to_json() const;
+    [[nodiscard]] virtual crow::json::wvalue to_json() const=0;
 };
 
 struct RequestCDDCSerial {
@@ -114,9 +114,9 @@ struct RequestCDDCSerial {
 };
 
 struct ResponseCDDCSerial : Response {
-  unsigned int cdd_serial;
+  unsigned int cdd_serial{0U};
 
-  crow::json::wvalue to_json() const override;
+    [[nodiscard]] crow::json::wvalue to_json() const override;
 };
 
 struct RequestCDDC {
@@ -129,7 +129,7 @@ struct RequestCDDC {
 struct ResponseCDDC : Response {
   CDDC cddc;
 
-  crow::json::wvalue to_json() const override;
+    [[nodiscard]] crow::json::wvalue to_json() const override;
 };
 
 struct RequestMKCs {
@@ -144,21 +144,21 @@ struct RequestMKCs {
 struct ResponseMKCs : Response {
   std::vector<MintKeyCert> keys;
 
-  crow::json::wvalue to_json() const override;
+    [[nodiscard]] crow::json::wvalue to_json() const override;
 };
 
 struct Blind {
   BigInt blinded_payload_hash; //bigint
   BigInt mint_key_id; //bigint
   std::string reference;
-  crow::json::wvalue to_json() const;
+    [[nodiscard]] crow::json::wvalue to_json() const;
   static tl::expected<Blind, eError> from_json(const crow::json::rvalue &json);
 };
 
 struct BlindSignature {
   BigInt blind_signature;
   std::string reference;
-  crow::json::wvalue to_json() const;
+    [[nodiscard]] crow::json::wvalue to_json() const;
 };
 
 struct RequestMint {
@@ -173,7 +173,7 @@ struct RequestMint {
 struct ResponseMint : Response {
   std::vector<BlindSignature> blind_signatures;
 
-  crow::json::wvalue to_json() const override;
+    [[nodiscard]] crow::json::wvalue to_json() const override;
 };
 
 struct Coin {
@@ -184,15 +184,15 @@ struct Coin {
     BigInt mint_key_id;
     std::string protocol_version;
     BigInt serial;
-    
-    crow::json::wvalue to_json() const;  
+
+      [[nodiscard]] crow::json::wvalue to_json() const;
     static tl::expected<Payload,eError> from_json(const crow::json::rvalue& json);
   };
 
   Payload payload;
   std::string signature;
 
-  crow::json::wvalue to_json() const;
+    [[nodiscard]] crow::json::wvalue to_json() const;
   static tl::expected<Coin, eError> from_json(const crow::json::rvalue &json);
 };
 
@@ -200,7 +200,7 @@ struct CoinStack {
   std::vector<Coin> coins;
   std::string subject;
   //  "type": "coinstack"
-  crow::json::wvalue to_json() const;
+  [[nodiscard]]  crow::json::wvalue to_json() const;
 };
 
 struct RequestRenew {
@@ -214,7 +214,7 @@ struct RequestRenew {
 };
 
 struct ResponseDelay : Response {
-  crow::json::wvalue to_json() const override;
+    [[nodiscard]] crow::json::wvalue to_json() const override;
 };
 
 struct RequestResume {
@@ -236,12 +236,12 @@ struct RequestRedeem {
 };
 
 struct ResponseRedeem : Response {
-  crow::json::wvalue to_json() const override;
+    [[nodiscard]] crow::json::wvalue to_json() const override;
 };
 
 class Model {
 public:
-  virtual ~Model(){};
+  virtual ~Model()=default;
 
   /** 
    * return the CurrencyDocumentDescription certifikate for a specific 
@@ -249,13 +249,13 @@ public:
    * [see spec](https://opencoin.org/0.4/schemata.html#cddc)
    * @return returns a pointer to the CDDC if successful, false otherwise
    */
-  virtual tl::expected<CDDC *, bool> getCDDC(unsigned int cdd_serial) = 0;
+  virtual tl::expected<CDDC *, bool> get_cddc(unsigned int cdd_serial) = 0;
 
   /** 
    * return the CurrencyDocumentDescription certifikate 
    * [see spec](https://opencoin.org/0.4/schemata.html#cddc)
    * @return returns a pointer to the CDDC if successful, false otherwise
-   */virtual tl::expected<CDDC *, bool> getCurrentCDDC() = 0;
+   */virtual tl::expected<CDDC *, bool> get_current_cddc() = 0;
 
   /** 
    * return the MintKey certificates for a given list of denominations 
@@ -266,7 +266,7 @@ public:
    *
    * @return mint key certificates for given denominations and mint_key_ids
    */
-  virtual const std::vector<MintKeyCert>
+  virtual std::vector<MintKeyCert>
   getMKCs(const std::vector<unsigned int> &denominations,
           const std::vector<BigInt> &mint_key_ids) = 0;
 
@@ -300,9 +300,9 @@ public:
    *
    * @return pointer to backend instance or null on invalid backend name
    */
-  static std::unique_ptr<Model> getModel(const std::string &backend_name);
+  static std::unique_ptr<Model> get_model(const std::string &backend_name);
 
 private:
 };
 
-#endif // #ifndef MODEL_HPP
+#endif // #ifndef OC_ISSUER_MODEL_HPP

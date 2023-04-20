@@ -1,22 +1,22 @@
 #include "crow.h"
 #include "crow/common.h"
-#include "crow/http_parser_merged.h"
 #include "crow/http_response.h"
 #include "model.hpp"
 
 int main() {
   crow::SimpleApp app;
-  std::shared_ptr<Model> model = Model::getModel("simple");
+  std::shared_ptr<Model> model = Model::get_model("simple");
 
   CROW_ROUTE(app, "/cddc")
-      .methods(crow::HTTPMethod::POST)([&model](const crow::request &req) {
+      .methods(crow::HTTPMethod::POST)
+    ([&model](const crow::request &req) {
         auto req_cddc = RequestCDDC::from_string(req.body);
         if (!req_cddc) {
           return crow::response(crow::status::BAD_REQUEST);
         } else {
           ResponseCDDC res;
           res.message_reference = req_cddc->message_reference;
-          auto cddc = model->getCDDC(req_cddc->cdd_serial);
+          auto cddc = model->get_cddc(req_cddc->cdd_serial);
           if (!cddc) {
             res.status_code = crow::status::NOT_FOUND;
           } else {
@@ -36,7 +36,7 @@ int main() {
           ResponseCDDCSerial res;
           res.message_reference = req->message_reference;
 
-          auto cddc = model->getCurrentCDDC();
+          auto cddc = model->get_current_cddc();
           if (!cddc) {
             res.status_code = crow::status::NOT_FOUND;
           } else {
@@ -47,8 +47,8 @@ int main() {
         }
       });
 
-  CROW_ROUTE(app, "/mkcs")
-      .methods(crow::HTTPMethod::POST)([&model](const crow::request &request) {
+  CROW_ROUTE(app, "/mkcs").methods(crow::HTTPMethod::POST)
+    ([&model](const crow::request &request) {
         auto req = RequestMKCs::from_string(request.body);
         if (!req) {
           return crow::response(crow::status::BAD_REQUEST);
@@ -61,8 +61,8 @@ int main() {
         }
       });
 
-  CROW_ROUTE(app, "/mint")
-      .methods(crow::HTTPMethod::POST)([&model](const crow::request &request) {
+  CROW_ROUTE(app, "/mint").methods(crow::HTTPMethod::POST)
+    ([&model](const crow::request &request) {
         auto req = RequestMint::from_string(request.body);
         if (!req) {
           return crow::response(crow::status::BAD_REQUEST);
@@ -70,8 +70,9 @@ int main() {
           ResponseMint res;
           res.message_reference = req->message_reference;
 
-	  /// \todo change argument transaction_reference to bigint
-          auto minted = model->mint(req->transaction_reference.to_string(), req->blinds);
+          /// \todo change argument transaction_reference to bigint
+          auto minted =
+              model->mint(req->transaction_reference.to_string(), req->blinds);
 
           res.blind_signatures = minted;
           res.status_code = crow::status::OK;

@@ -2,7 +2,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 TEST_CASE("BigInt::from_string", "[big_int]") {
-  std::string VALID [] = {
+  const std::string VALID [] = {
     "1",
     "12",
     "123",
@@ -17,10 +17,10 @@ TEST_CASE("BigInt::from_string", "[big_int]") {
     "abcdef1"
   };
 
-  for (size_t i= 0; i<sizeof(VALID)/sizeof(VALID[0]);i++) {
-    auto b = BigInt::from_string(VALID[i]);
-    REQUIRE(b->to_string() == VALID[i]);
+  for (const auto & i : VALID) {
+    auto b = BigInt::from_string(i);
     REQUIRE(b.has_value());
+    REQUIRE(b->to_string() == i);
   }
   
   auto invalid_hex = "aabbcc..";

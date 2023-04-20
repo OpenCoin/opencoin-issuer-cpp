@@ -18,8 +18,8 @@ The following table gives an overview of the mapping of requests to URLs:
 
 | Request           | URL          | Response                      | C++ Interface Method                               |
 |:------------------|:-------------|:------------------------------|:---------------------------------------------------|
-| RequestCDDCSerial | /cddc/serial | ResponseCDDCSerial            | cdd.cdd_serial of Model::getCurrentCDDC() |
-| RequestCDDC       | /cddc        | ResponseCDDC                  | Model::getCurrentCDDC()                            |
+| RequestCDDCSerial | /cddc/serial | ResponseCDDCSerial            | cdd.cdd_serial of Model::get_current_cddc() |
+| RequestCDDC       | /cddc        | ResponseCDDC                  | Model::get_current_cddc()                            |
 | RequestMKCs       | /mkcs        | ResponseMKCs                  | Model::getMKCs                                     |
 | RequestMint       | /mint        | ResponseMint                  | Model::mint                                        |
 | RequestRenew      | /renew       | ResponseMint or ResponseDelay | ?                                                  |
