@@ -12,7 +12,7 @@ TEST_CASE( "PublicKey::to_json", "[to_json]" ) {
   REQUIRE( json["modulus"].dump() == "\"" + k.modulus.to_string() + "\""  );
   REQUIRE( json["public_exponent"].dump() == "\"" + k.public_exponent.to_string()+"\"" );
   REQUIRE( json["type"].dump() == "\"rsa public key\"" );
-  REQUIRE( json.keys().size() == 3 );
+  REQUIRE( json.keys().size() == 3U );
 }
 
 TEST_CASE("RequestCDDCSerial::from_string", "[from_string]") {
