@@ -16,6 +16,8 @@ endif()
 
 project(oc-issuer VERSION 0.0.2 LANGUAGES CXX)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include(FetchContent)
 
 #
@@ -96,7 +98,10 @@ add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE oc-mint-lib INTERFACE tl::expected::expected)
 
 ## these are unittests that can be run on any platform
-add_executable(tests  test/test_big_int.cpp test/test.cpp)
+add_executable(tests test/test_big_int.cpp
+                     test/test_json_s8n.cpp
+                     test/test_crypto.cpp)
+                     
 target_link_libraries(tests
                       oc-mint-lib
 		      Catch2::Catch2WithMain)
