@@ -16,6 +16,8 @@ endif()
 
 project(oc-issuer VERSION 0.0.2 LANGUAGES CXX)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 include(FetchContent)
 
 #
@@ -45,6 +47,18 @@ FetchContent_Declare(expected
 if(NOT expected_POPULATED)
   FetchContent_Populate(expected)
 endif(NOT expected_POPULATED)
+
+# add crypt++ (+cmake) library
+set(CRYPTOPP_BUILD_TESTING Off)
+set(CRYPTOPP_INSTALL Off)
+
+if(NOT cryptopp_POPULATED)
+  FetchContent_Declare(cryptopp
+    GIT_REPOSITORY https://github.com/abdes/cryptopp-cmake.git
+    GIT_TAG CRYPTOPP_8_7_0)
+  FetchContent_Populate(cryptopp)
+  add_subdirectory(${cryptopp_SOURCE_DIR} ${cryptopp_BINARY_DIR})
+endif(NOT cryptopp_POPULATED)
 
 include(CTest)
 enable_testing()
@@ -77,14 +91,17 @@ set(LIB_SOURCES
   src/big_int.hpp src/big_int.cpp )
 
 add_library(oc-mint-lib ${LIB_SOURCES})
-target_link_libraries(oc-mint-lib PUBLIC Crow::Crow)
+target_link_libraries(oc-mint-lib PUBLIC Crow::Crow cryptopp::cryptopp)
 target_include_directories(oc-mint-lib PUBLIC ${expected_SOURCE_DIR}/include src) 
 
 add_executable(${PROJECT_NAME} src/main.cpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE oc-mint-lib INTERFACE tl::expected::expected)
 
 ## these are unittests that can be run on any platform
-add_executable(tests  test/test_big_int.cpp test/test.cpp)
+add_executable(tests test/test_big_int.cpp
+                     test/test_json_s8n.cpp
+                     test/test_crypto.cpp)
+                     
 target_link_libraries(tests
                       oc-mint-lib
 		      Catch2::Catch2WithMain)
