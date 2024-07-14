@@ -1,0 +1,9 @@
+{
+  "name": "oc-mint-cpp",
+    "version-string": "master",
+    "dependencies": [
+        "asio",
+        "openssl",
+        "zlib"
+    ]
+}

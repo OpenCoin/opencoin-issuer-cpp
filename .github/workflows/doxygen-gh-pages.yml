@@ -15,7 +15,12 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v3
       - name: Prepare dependencies
-        run: sudo apt-get update && sudo apt-get install -yq libboost-system-dev libboost-date-time-dev cmake graphviz doxygen
+        run:    |
+          sudo apt-get update && \
+          sudo apt-get install -yq \
+          libasio-dev \
+          libssl-dev zlib1g-dev \
+          cmake graphviz doxygen
       - name: configure
         run: cmake -B build -S . -DEXPATPP_BUILD_DOCS=ON
       - name: clean generated docs dir
